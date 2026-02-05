@@ -1,0 +1,54 @@
+/* ========== SEARCH BAR CONTAINER ========== */
+.search-bar-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex: 1;
+}
+
+.search-box {
+    flex: 1;
+    max-width: 500px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 16px;
+    background: var(--vscode-input-background, #1a1a1a);
+    border: 1px solid var(--vscode-input-border, #404040);
+    border-radius: 6px;
+    color: var(--vscode-input-foreground, #e0e0e0);
+    font-size: 14px;
+    transition: all 0.2s;
+}
+
+.search-box input:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder, #0078d4);
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.1);
+}
+
+.search-box input::placeholder {
+    color: var(--vscode-input-placeholderForeground, #888);
+}
+
+.search-bar-container button {
+    padding: 8px 16px;
+    background: var(--vscode-button-background, #0078d4);
+    color: var(--vscode-button-foreground, #ffffff);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    white-space: nowrap;
+    transition: background 0.2s;
+}
+
+.search-bar-container button:hover {
+    background: var(--vscode-button-hoverBackground, #026ec1);
+}
+
+.search-bar-container button:focus {
+    outline: 2px solid var(--vscode-focusBorder, #0078d4);
+    outline-offset: 2px;
+}

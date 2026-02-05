@@ -1,0 +1,150 @@
+/* ========== SIDEBAR MAIN CONTAINER ========== */
+.sidebar {
+    background: var(--vscode-editor-background, #1e1e1e);
+    padding: 16px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border-right: 1px solid var(--vscode-sideBar-border, #404040);
+    height: 100%;
+    min-height: 0;
+}
+
+.sidebar::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background, #1a1a1a);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground, #404040);
+    border-radius: 5px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground, #505050);
+}
+
+/* ========== SIDEBAR HEADINGS ========== */
+.sidebar h3 {
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--vscode-descriptionForeground, #888);
+    margin-bottom: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+/* ========== FILE SELECTION ========== */
+.filter-select {
+    width: 100%;
+    padding: 8px 32px 8px 10px;
+    background: var(--vscode-dropdown-background, #1a1a1a);
+    border: 1px solid var(--vscode-dropdown-border, #404040);
+    border-radius: 4px;
+    color: var(--vscode-dropdown-foreground, #e0e0e0);
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+}
+
+.filter-select:hover {
+    border-color: var(--vscode-focusBorder, #0078d4);
+}
+
+.filter-select:focus {
+    outline: none;
+    border-color: var(--vscode-focusBorder, #0078d4);
+    box-shadow: 0 0 0 1px var(--vscode-focusBorder, #0078d4);
+}
+
+.filter-select optgroup {
+    font-weight: 600;
+    color: var(--vscode-foreground, #e0e0e0);
+    background: var(--vscode-dropdown-background, #1a1a1a);
+}
+
+.filter-select option {
+    padding: 6px 10px;
+    background: var(--vscode-dropdown-background, #1a1a1a);
+    color: var(--vscode-dropdown-foreground, #e0e0e0);
+}
+
+/* ========== FILTER GROUP ========== */
+.filter-group {
+    margin-bottom: 24px;
+}
+
+.filter-group:last-child {
+    margin-bottom: 0;
+}
+
+/* ========== FILTER ITEMS ========== */
+.filter-item {
+    padding: 8px 12px;
+    margin-bottom: 2px;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+    transition: all 0.15s;
+    color: var(--vscode-sideBar-foreground, #e0e0e0);
+    position: relative;
+}
+
+.filter-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    border-radius: 0 2px 2px 0;
+    transition: background 0.15s;
+}
+
+.filter-item:hover {
+    background: var(--vscode-list-hoverBackground, #2a2a2a);
+}
+
+.filter-item.active {
+    background: var(--vscode-list-activeSelectionBackground, rgba(0, 120, 212, 0.15));
+    color: var(--vscode-list-activeSelectionForeground, #fff);
+}
+
+.filter-item.active::before {
+    background: var(--vscode-focusBorder, #0078d4);
+}
+
+/* ========== COUNT BADGE ========== */
+.filter-item .count {
+    background: var(--vscode-badge-background, #404040);
+    color: var(--vscode-badge-foreground, #e0e0e0);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 24px;
+    text-align: center;
+}
+
+.filter-item.active .count {
+    background: var(--vscode-focusBorder, #0078d4);
+    color: #fff;
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 900px) {
+    .sidebar {
+        display: none;
+    }
+}

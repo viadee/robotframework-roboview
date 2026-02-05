@@ -1,0 +1,27 @@
+.project-info {
+  background-color: var(--vscode-editorWidget-background, #252526);
+  border: 1px solid var(--vscode-panel-border, #404040);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 30px;
+  transition: border-color 0.2s, transform 0.2s;
+}
+
+.project-info:hover {
+  border-color: var(--vscode-focusBorder, #0078d4);
+  transform: translateY(-2px);
+}
+
+.project-name {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--vscode-textLink-foreground, #4fc3f7);
+  margin-bottom: 8px;
+}
+
+.project-path {
+  font-size: 13px;
+  color: var(--vscode-descriptionForeground, #888);
+  font-family: 'Courier New', Consolas, Monaco, monospace;
+  word-break: break-all;
+}

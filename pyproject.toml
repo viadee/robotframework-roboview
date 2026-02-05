@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "StudiProjekt-RoboView"
+version = "0.1.0"
+description = ""
+license = "Apache 2.0"
+authors = ["viadee Unternehmensberatung AG"]
+readme = "README.md"
+package-mode = false
+packages = [
+    { include = "./packages/roboview" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.14"
+roboview = {path = "packages/roboview"}
+
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^4.3.0"
+pyright = "^1.1.406"
+pytest = "^8.4.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,174 @@
+/* ========== LAYOUT CONTAINER ========== */
+.layout-container {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--vscode-editor-background, #1e1e1e);
+  transition: grid-template-columns 0.3s ease;
+}
+
+.layout-container.resizing {
+  transition: none;
+}
+
+/* ========== SIDEBAR SECTION ========== */
+.sidebar-section {
+  grid-column: 1;
+  grid-row: 1;
+  background: var(--vscode-sideBar-background, #252525);
+  border-right: 1px solid var(--vscode-sideBar-border, #404040);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== MAIN CONTENT SECTION ========== */
+.main-content-section {
+  grid-column: 2;
+  grid-row: 1;
+  background: var(--vscode-editor-background, #1e1e1e);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== DETAILS PANEL SECTION ========== */
+.details-panel-section {
+  grid-column: 3;
+  grid-row: 1;
+  background: var(--vscode-sideBar-background, #252525);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.details-panel-section.open {
+  border-left: 1px solid var(--vscode-panel-border, #404040);
+}
+
+/* ========== RESIZE HANDLE ========== */
+.resize-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 5px;
+  cursor: col-resize;
+  background: transparent;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.resize-handle:hover {
+  background: var(--vscode-focusBorder, #0078d4);
+}
+
+.resize-handle:active {
+  background: var(--vscode-focusBorder, #0078d4);
+}
+
+/* ========== DETAILS TOGGLE BUTTON ========== */
+.details-toggle-btn {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 64px;
+  background: var(--vscode-button-background, #0078d4);
+  border: 1px solid var(--vscode-panel-border, #404040);
+  color: var(--vscode-button-foreground, #fff);
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: all 0.2s;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Toggle Button wenn Panel OFFEN ist */
+.details-toggle-btn.open {
+  right: calc(var(--details-width, 450px));
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+}
+
+.details-toggle-btn.open:hover {
+  background: var(--vscode-button-hoverBackground, #026ec1);
+  right: calc(var(--details-width, 450px) + 2px);
+}
+
+/* Toggle Button wenn Panel GESCHLOSSEN ist */
+.details-toggle-btn.closed {
+  right: 0;
+  border-left: none;
+  border-radius: 6px 0 0 6px;
+}
+
+.details-toggle-btn.closed:hover {
+  background: var(--vscode-button-hoverBackground, #026ec1);
+  right: 2px;
+}
+
+.details-toggle-btn:focus {
+  outline: 2px solid var(--vscode-focusBorder, #0078d4);
+  outline-offset: -2px;
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+@media (max-width: 1200px) {
+  .details-toggle-btn.open {
+    right: 300px;
+  }
+}
+
+@media (max-width: 900px) {
+  /* Hide sidebar on smaller screens */
+  .sidebar-section {
+    display: none;
+  }
+
+  .details-toggle-btn.open {
+    right: 350px;
+  }
+}
+
+@media (max-width: 600px) {
+  .details-panel-section.open {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 90%;
+    max-width: 400px;
+    z-index: 1000;
+    box-shadow: -4px 0 8px rgba(0, 0, 0, 0.3);
+    grid-column: unset;
+  }
+
+  .resize-handle {
+    display: none;
+  }
+
+  .details-toggle-btn.open {
+    right: 90%;
+  }
+
+  .details-toggle-btn.closed {
+    right: 0;
+  }
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  .layout-container,
+  .details-toggle-btn,
+  .resize-handle {
+    transition: none !important;
+  }
+}

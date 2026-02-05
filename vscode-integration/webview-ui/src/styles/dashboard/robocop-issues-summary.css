@@ -1,0 +1,88 @@
+.issues-list {
+  background-color: var(--vscode-editorWidget-background, #252526);
+  border: 1px solid var(--vscode-panel-border, #404040);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 30px;
+}
+
+.issue-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid var(--vscode-panel-border, #404040);
+  transition: background-color 0.2s;
+}
+
+.issue-item:last-child {
+  border-bottom: none;
+}
+
+.issue-item:hover {
+  background-color: var(--vscode-list-hoverBackground, #2a2d2e);
+}
+
+.issue-severity {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.severity-error {
+  background-color: #ef5350;
+  box-shadow: 0 0 8px rgba(239, 83, 80, 0.5);
+}
+
+.severity-warning {
+  background-color: #ffa726;
+  box-shadow: 0 0 8px rgba(255, 167, 38, 0.5);
+}
+
+.severity-info {
+  background-color: var(--vscode-focusBorder, #0078d4);
+  box-shadow: 0 0 8px rgba(0, 120, 212, 0.5);
+}
+
+.issue-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--vscode-editor-foreground, #d4d4d4);
+}
+
+.issue-count {
+  font-size: 13px;
+  color: var(--vscode-descriptionForeground, #888);
+  font-weight: 500;
+  min-width: 80px;
+  text-align: right;
+}
+
+.no-issues {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  gap: 16px;
+}
+
+.no-issues-icon {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(102, 187, 106, 0.15);
+  color: #66bb6a;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.no-issues-text {
+  font-size: 16px;
+  color: var(--vscode-descriptionForeground, #888);
+  font-weight: 500;
+}

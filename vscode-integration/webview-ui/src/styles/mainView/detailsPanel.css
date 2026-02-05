@@ -1,0 +1,274 @@
+/* ========== DETAILS PANEL CONTAINER ========== */
+/* Nur Styling des Panel-Inhalts, KEIN Grid/Layout/Toggle */
+.details-panel {
+    background: var(--vscode-editor-background, #1e1e1e);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+/* ========== DETAILS HEADER ========== */
+.details-header {
+    flex-shrink: 0;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--vscode-panel-border, #404040);
+    background: var(--vscode-editor-background, #1e1e1e);
+    border-left: 3px solid var(--vscode-focusBorder, #0078d4);
+}
+
+.details-header h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--vscode-editor-foreground, #fff);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+}
+
+.details-header h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 20px;
+    background: var(--vscode-focusBorder, #0078d4);
+    border-radius: 2px;
+}
+
+.details-subtitle {
+    font-size: 13px;
+    color: var(--vscode-descriptionForeground, #888);
+    margin-top: 6px;
+}
+
+/* ========== DETAILS CONTENT ========== */
+.details-content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    min-height: 0;
+}
+
+.details-content::-webkit-scrollbar {
+    width: 10px;
+}
+
+.details-content::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background, #1a1a1a);
+}
+
+.details-content::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground, #404040);
+    border-radius: 5px;
+}
+
+.details-content::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground, #505050);
+}
+
+/* ========== DETAILS SECTION ========== */
+.details-section {
+    margin-bottom: 24px;
+}
+
+.details-section:last-child {
+    margin-bottom: 0;
+}
+
+.details-section h3 {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--vscode-descriptionForeground, #888);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+/* ========== SECTION CONTENT (for DetailsSectionText) ========== */
+.section-content {
+    background: var(--vscode-editorWidget-background, #1e1e1e);
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--vscode-panel-border, #404040);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--vscode-editor-foreground, #e0e0e0);
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    font-family: 'Consolas', 'Courier New', monospace;
+}
+
+.section-content:empty::before {
+    content: 'No content available';
+    color: var(--vscode-descriptionForeground, #888);
+    font-style: italic;
+}
+
+/* ========== USAGE TABLE CONTAINER ========== */
+.usage-table-container {
+    background: var(--vscode-editorWidget-background, #1e1e1e);
+    border: 1px solid var(--vscode-panel-border, #404040);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.usage-table-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.usage-table-container th {
+    background: var(--vscode-editorGroupHeader-tabsBackground, #2a2a2a);
+    padding: 10px 12px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--vscode-descriptionForeground, #888);
+    text-align: left;
+    border-bottom: 1px solid var(--vscode-panel-border, #404040);
+    vertical-align: middle;
+}
+
+.usage-table-container td {
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--vscode-editorWidget-border, #2a2a2a);
+    vertical-align: middle;
+    color: var(--vscode-editor-foreground, #e0e0e0);
+}
+
+/* ========== LINKS IN DETAILS PANEL - WHITE INSTEAD OF BLUE ========== */
+/* Catch all links in details panel */
+.details-panel a,
+.details-content a,
+.usage-table-container a,
+.usage-table-container td a,
+.section-content a {
+    color: var(--vscode-editor-foreground) !important;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.details-panel a:hover,
+.details-content a:hover,
+.usage-table-container a:hover,
+.usage-table-container td a:hover,
+.section-content a:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+.usage-table-container td:nth-child(2),
+.usage-table-container th:nth-child(2) {
+    text-align: right;
+}
+
+.usage-table-container tr:last-child td {
+    border-bottom: none;
+}
+
+.usage-table-container tr:hover {
+    background: var(--vscode-list-hoverBackground, #252525);
+}
+
+/* ========== KEYWORD SIMILARITY ========== */
+.similarity-icon {
+    margin-left: 6px;
+    cursor: help;
+    color: var(--vscode-descriptionForeground, #888);
+    font-size: 1em;
+    vertical-align: baseline;
+    display: inline-block;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.similarity-icon:hover {
+    color: var(--vscode-editor-foreground);
+}
+
+.no-similar-keywords {
+    text-align: center;
+    color: var(--vscode-descriptionForeground, #888);
+    font-style: italic;
+    padding: 12px;
+}
+
+/* ========== SIMILARITY BADGE STYLES ========== */
+.usage-badge.high-similarity {
+    background: rgba(244, 67, 54, 0.2);
+    color: #f44336;
+    font-weight: 700;
+    border: 1px solid rgba(244, 67, 54, 0.4);
+    box-shadow: 0 0 8px rgba(244, 67, 54, 0.3);
+}
+
+/* ========== FORCE WHITE TEXT FOR ALL LINKS AND PERCENTAGES ========== */
+/* Catch any remaining blue text in details panel */
+.details-panel *[style*="color"] {
+    color: var(--vscode-editor-foreground) !important;
+}
+
+/* Specifically target similarity percentages and counts */
+.usage-table-container td:last-child,
+.details-panel .similarity-percentage,
+.details-panel [class*="similarity"],
+.details-panel [class*="percentage"] {
+    color: var(--vscode-editor-foreground) !important;
+}
+
+/* ========== RESPONSIVE ADJUSTMENTS ========== */
+@media (max-width: 900px) {
+    .details-header {
+        padding: 14px 16px;
+    }
+
+    .details-content {
+        padding: 16px;
+    }
+}
+
+/* ========== ABSOLUTE OVERRIDE - ALL TEXT WHITE IN DETAILS PANEL ========== */
+/* This catches everything that might be blue, including inline styles */
+.details-panel td,
+.details-panel td *,
+.details-panel a,
+.details-panel a *,
+.details-panel span,
+.details-panel div:not(.usage-badge):not(.keyword-icon) {
+    color: var(--vscode-editor-foreground) !important;
+}
+
+/* Preserve specific colors for badges and icons */
+.details-panel .usage-badge.high-similarity {
+    color: #f44336 !important;
+}
+
+.details-panel .usage-badge.none {
+    color: #f44336 !important;
+}
+
+.details-panel .usage-badge.low {
+    color: #ff9800 !important;
+}
+
+.details-panel .usage-badge.medium {
+    color: #9ccc65 !important;
+}
+
+.details-panel .usage-badge.high {
+    color: #4caf50 !important;
+}
+
+.details-panel .keyword-icon {
+    color: #fff !important;
+}
+
+/* Ensure gray for labels remains */
+.details-panel h3,
+.details-panel .details-subtitle {
+    color: var(--vscode-descriptionForeground, #888) !important;
+}

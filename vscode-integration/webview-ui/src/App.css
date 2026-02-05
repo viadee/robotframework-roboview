@@ -1,0 +1,300 @@
+@import 'styles/mainView/searchBar.css';
+@import 'styles/mainView/sidebar.css';
+@import 'styles/mainView/mainContent.css';
+@import 'styles/mainView/contentTable.css';
+@import 'styles/mainView/detailsPanel.css';
+@import './styles/dashboard/dashboard-view.css';
+@import "./styles/dashboard/keyword-analysis.css";
+@import "./styles/dashboard/metric-grid.css";
+@import "./styles/dashboard/project-info.css";
+@import "./styles/dashboard/robocop-issues-summary.css";
+@import "./styles/common/layout.css";
+
+/* ========== RESET & BASE ========== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+}
+
+/* ========== ROOT VARIABLES (VSCode Theme Colors) ========== */
+:root {
+  --vscode-editor-background: #1e1e1e;
+  --vscode-sideBar-background: #252525;
+  --vscode-editorGroupHeader-tabsBackground: #2a2a2a;
+  --vscode-editorWidget-background: #252526;
+
+  --vscode-editor-foreground: #d4d4d4;
+  --vscode-sideBar-foreground: #cccccc;
+  --vscode-descriptionForeground: #888888;
+
+  --vscode-panel-border: #404040;
+  --vscode-sideBar-border: #404040;
+  --vscode-editorWidget-border: #454545;
+
+  --vscode-input-background: #1a1a1a;
+  --vscode-input-foreground: #e0e0e0;
+  --vscode-input-border: #404040;
+  --vscode-input-placeholderForeground: #888888;
+  --vscode-dropdown-background: #1a1a1a;
+  --vscode-dropdown-foreground: #e0e0e0;
+  --vscode-dropdown-border: #404040;
+
+  --vscode-button-background: #0078d4;
+  --vscode-button-foreground: #ffffff;
+  --vscode-button-hoverBackground: #026ec1;
+
+  --vscode-focusBorder: #0078d4;
+  --vscode-textLink-foreground: #4fc3f7;
+
+  --vscode-list-hoverBackground: #2a2d2e;
+  --vscode-list-activeSelectionBackground: rgba(0, 120, 212, 0.15);
+  --vscode-list-activeSelectionForeground: #ffffff;
+
+  --vscode-badge-background: #4d4d4d;
+  --vscode-badge-foreground: #ffffff;
+
+  --vscode-scrollbarSlider-background: #1a1a1a;
+  --vscode-scrollbarSlider-hoverBackground: #404040;
+  --vscode-scrollbarSlider-activeBackground: #505050;
+}
+
+/* ========== APP CONTAINER ========== */
+.app {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', sans-serif;
+  background-color: var(--vscode-editor-background);
+  color: var(--vscode-editor-foreground);
+  padding: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ========== HEADER ========== */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  background: var(--vscode-editor-background);
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  height: 60px;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.header-nav {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ========== LOGO ========== */
+.logo {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: white;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ========== HEADINGS ========== */
+h1 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--vscode-editor-foreground);
+  margin: 0;
+}
+
+/* ========== NAVIGATION BUTTONS ========== */
+.nav-button {
+  padding: 8px 16px;
+  background-color: var(--vscode-sideBar-background);
+  color: var(--vscode-sideBar-foreground);
+  border: 1px solid var(--vscode-panel-border);
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.nav-button:hover {
+  background-color: var(--vscode-list-hoverBackground);
+  border-color: var(--vscode-focusBorder);
+}
+
+.nav-button.active {
+  background-color: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+  border-color: var(--vscode-button-background);
+}
+
+.nav-button.active:hover {
+  background-color: var(--vscode-button-hoverBackground);
+  border-color: var(--vscode-button-hoverBackground);
+}
+
+/* ========== VIEW CONTAINER ========== */
+.app > *:not(.header):not(.footer) {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* ========== FOOTER ========== */
+.footer {
+  margin-top: 0;
+  padding: 12px 24px;
+  border-top: 1px solid var(--vscode-panel-border);
+  text-align: center;
+  font-size: 12px;
+  color: var(--vscode-descriptionForeground);
+  background: var(--vscode-editorGroupHeader-tabsBackground);
+  flex-shrink: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ========== LOADING STATES ========== */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 20px;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid var(--vscode-panel-border);
+  border-top-color: var(--vscode-focusBorder);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-container p {
+  color: var(--vscode-descriptionForeground);
+  font-size: 14px;
+}
+
+/* ========== RESPONSIVE BREAKPOINTS ========== */
+@media (max-width: 1024px) {
+  h1 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 16px;
+    height: auto;
+  }
+
+  .header-nav {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .nav-button {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
+  }
+
+  h1 {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 12px;
+  }
+
+  .logo {
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+
+  h1 {
+    font-size: 14px;
+  }
+
+  .nav-button {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .footer {
+    padding: 12px;
+    font-size: 11px;
+  }
+}
+
+/* ========== ACCESSIBILITY ========== */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--vscode-focusBorder);
+  outline-offset: 2px;
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--vscode-focusBorder);
+  outline-offset: -2px;
+}
+
+.path-scroll:hover,
+td[style*="cursor: pointer"]:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}

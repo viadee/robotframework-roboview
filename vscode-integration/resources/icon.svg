@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <!-- Roboter-Körper -->
+<rect x="30" y="55" width="143" height="143" rx="20" fill="none" stroke="#000000" stroke-width="6" />
+
+
+  <!-- Kopf -->
+  <circle cx="100" cy="28" r="25" fill="none" stroke="#000000" stroke-width="6" />
+  <rect x="85" y="18" width="30" height="10" rx="3" fill="#000000" />
+
+  <!-- Augen -->
+  <circle cx="92" cy="23" r="3" fill="#00aaff" />
+  <circle cx="108" cy="23" r="3" fill="#00aaff" />
+
+  <!-- Netzwerk-Struktur -->
+  <circle cx="140" cy="80" r="5" fill="#a0a0a0" />
+  <circle cx="160" cy="100" r="5" fill="#a0a0a0" />
+  <circle cx="140" cy="120" r="5" fill="#a0a0a0" />
+  <circle cx="120" cy="100" r="5" fill="#a0a0a0" />
+  <line x1="140" y1="80" x2="160" y2="100" stroke="#a0a0a0" stroke-width="2" />
+  <line x1="160" y1="100" x2="140" y2="120" stroke="#a0a0a0" stroke-width="2" />
+  <line x1="140" y1="120" x2="120" y2="100" stroke="#a0a0a0" stroke-width="2" />
+  <line x1="120" y1="100" x2="140" y2="80" stroke="#a0a0a0" stroke-width="2" />
+
+  <!-- Dekoration: Punktmuster auf Körper -->
+  <circle cx="80" cy="80" r="2" fill="#000000" />
+  <circle cx="80" cy="90" r="2" fill="#000000" />
+  <circle cx="80" cy="100" r="2" fill="#000000" />
+
+</svg>

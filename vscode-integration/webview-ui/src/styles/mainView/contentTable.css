@@ -1,0 +1,183 @@
+/* ========== TABLE STRUCTURE ========== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background: var(--vscode-editor-background, #1e1e1e);
+    z-index: 10;
+}
+
+th {
+    padding: 12px 24px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--vscode-descriptionForeground, #888);
+    border-bottom: 1px solid var(--vscode-panel-border, #404040);
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+th.center-align {
+    text-align: center;
+}
+
+th:hover {
+    color: var(--vscode-editor-foreground);
+    cursor: pointer;
+}
+
+td {
+    padding: 12px 24px;
+    border-bottom: 1px solid var(--vscode-editorWidget-border, #2a2a2a);
+    font-size: 14px;
+    vertical-align: middle;
+    color: var(--vscode-editor-foreground, #e0e0e0);
+}
+
+td:nth-child(3),
+td:nth-child(4) {
+    text-align: center;
+}
+
+tr {
+    transition: background 0.15s;
+    cursor: pointer;
+}
+
+tr:hover {
+    background: var(--vscode-list-hoverBackground, #252525);
+}
+
+tr.selected {
+    background: var(--vscode-list-activeSelectionBackground, rgba(0, 120, 212, 0.15));
+    color: var(--vscode-list-activeSelectionForeground, #e0e0e0);
+}
+
+/* ========== KEYWORD STYLES ========== */
+.keyword-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.keyword-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    min-height: 22px;
+    flex-shrink: 0;
+    background: var(--vscode-button-background, #0078d4);
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--vscode-button-foreground, #fff);
+    line-height: 1;
+}
+
+.keyword-icon.user-defined {
+    background: #0078d4;
+}
+
+.keyword-icon.external {
+    background: #f9a825;
+}
+
+.keyword-icon.E {
+    background: #f44336;
+}
+
+.keyword-icon.W {
+    background: #ff9800;
+}
+
+.keyword-icon.info {
+    background: #2196f3;
+}
+
+/* ========== PATH DISPLAY ========== */
+.path-scroll {
+    max-width: 300px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    white-space: nowrap;
+}
+
+.path-scroll::-webkit-scrollbar {
+    height: 6px;
+}
+
+.path-scroll::-webkit-scrollbar-track {
+    background: var(--vscode-scrollbarSlider-background, #1a1a1a);
+    border-radius: 3px;
+}
+
+.path-scroll::-webkit-scrollbar-thumb {
+    background: var(--vscode-scrollbarSlider-hoverBackground, #404040);
+    border-radius: 3px;
+}
+
+.path-scroll::-webkit-scrollbar-thumb:hover {
+    background: var(--vscode-scrollbarSlider-activeBackground, #505050);
+}
+
+.path {
+    color: var(--vscode-descriptionForeground, #888);
+    font-size: 13px;
+}
+
+.path-segment {
+    color: var(--vscode-editor-foreground);
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.path-segment:hover {
+    opacity: 0.8;
+    text-decoration: underline;
+}
+
+/* ========== USAGE BADGES ========== */
+.usage-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    min-height: 24px;
+}
+
+.usage-badge.none {
+    background: rgba(244, 67, 54, 0.15);
+    color: #f44336;
+}
+
+.usage-badge.low {
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800;
+}
+
+.usage-badge.medium {
+    background: rgba(156, 204, 101, 0.15);
+    color: #9ccc65;
+}
+
+.usage-badge.high {
+    background: rgba(76, 175, 80, 0.15);
+    color: #4caf50;
+}
+
+.usage-badge.blue {
+    background: rgba(0, 120, 212, 0.15);
+    color: #0078d4;
+}

@@ -1,0 +1,16 @@
+extends: default
+
+rules:
+  # Allow both "\n" and "\r\n" line endings.
+  new-lines:
+    type: platform
+
+  # Don't require documents to start with "---"
+  document-start: disable
+
+  # Enforce line length of 80 chars
+  line-length:
+    max: 80
+
+ignore:
+  - node_modules/
