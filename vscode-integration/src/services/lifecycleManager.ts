@@ -2,6 +2,7 @@ import { PythonEnvironmentManager } from "./pythonEnvironmentManager";
 import { BackendConnectionManager } from "./backendConnectionManager";
 import vscode from "vscode";
 import { RoboViewControlProvider } from "../views";
+import { RoboViewPanel } from "../roboViewPanel";
 
 export class LifecycleManager {
   private backendConnectionManager: BackendConnectionManager;
@@ -43,20 +44,39 @@ export class LifecycleManager {
           pythonInterpreterPath !== "" ||
           !(await this.backendConnectionManager.isServerRunning())
         ) {
-          progress.report({ increment: 20, message: "Starting server..." });
-          await this.backendConnectionManager.startServer(
-            pythonInterpreterPath,
-          );
+          try {
+            progress.report({ increment: 20, message: "Starting server..." });
+            const serverStarted =
+              await this.backendConnectionManager.startServer(
+                pythonInterpreterPath,
+              );
 
-          progress.report({ increment: 40, message: "Waiting for server..." });
-          await this.backendConnectionManager.waitForServerReady(100000);
+            if (!serverStarted) {
+              vscode.window.showErrorMessage("Failed to start server.");
+              return;
+            }
 
-          progress.report({ increment: 70, message: "Initializing server..." });
-          await this.backendConnectionManager.initializeServer(currentPanel);
+            progress.report({
+              increment: 40,
+              message: "Waiting for server...",
+            });
+            await this.backendConnectionManager.waitForServerReady(100000);
 
-          progress.report({ increment: 100, message: "Done!" });
-          vscode.commands.executeCommand("roboview.show-monitor");
-          this.roboViewControlProvider.setExtensionReady(true);
+            progress.report({
+              increment: 70,
+              message: "Initializing server...",
+            });
+            await this.backendConnectionManager.initializeServer(currentPanel);
+
+            progress.report({ increment: 100, message: "Done!" });
+            vscode.commands.executeCommand("roboview.show-monitor");
+            this.roboViewControlProvider.setExtensionReady(true);
+          } catch (error) {
+            vscode.window.showErrorMessage(
+              `Failed to start server: ${error instanceof Error ? error.message : String(error)}`,
+            );
+            return;
+          }
         } else {
           vscode.window.showErrorMessage(
             "Not a valid Python Interpreter Path chosen.",
@@ -67,10 +87,8 @@ export class LifecycleManager {
     );
   }
 
-  public async restartRoboView(
-    currentPanel: vscode.WebviewPanel | undefined,
-  ): Promise<void> {
-    currentPanel?.dispose();
+  public async restartRoboView(): Promise<void> {
+    RoboViewPanel.currentPanel?.dispose();
     vscode.commands.executeCommand("workbench.action.restartExtensionHost");
   }
 }
