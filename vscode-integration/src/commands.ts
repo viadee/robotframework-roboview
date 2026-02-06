@@ -19,7 +19,7 @@ export class CommandHandler {
       ),
 
       vscode.commands.registerCommand("roboview.restart", () =>
-        lifecycleManager.restartRoboView(currentPanel),
+        lifecycleManager.restartRoboView(),
       ),
     );
   }
