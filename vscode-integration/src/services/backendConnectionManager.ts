@@ -39,19 +39,19 @@ export class BackendConnectionManager {
     );
   }
 
-  public async startServer(pythonInterpreterPath: string): Promise<void> {
+  public async startServer(pythonInterpreterPath: string): Promise<boolean> {
     const workspaceFolder = PathManager.getWorkspaceRoot();
 
     if (!workspaceFolder) {
       vscode.window.showErrorMessage("No Workspace Folder Selected.");
-      return;
+      return false;
     }
 
     this.killServerProcess();
 
     if (await this.isServerRunning()) {
       vscode.window.showInformationMessage("Server already running.");
-      return;
+      return true;
     }
 
     try {
@@ -83,7 +83,7 @@ export class BackendConnectionManager {
         const errorMsg =
           "RoboView is not installed. Please install it using: pip install roboview";
         vscode.window.showErrorMessage(errorMsg);
-        return;
+        return false;
       }
 
       this.serverOutputChannel.appendLine("✓ RoboView is installed");
@@ -122,10 +122,12 @@ export class BackendConnectionManager {
         this.serverOutputChannel.appendLine(`[ERROR] ${message}`);
         vscode.window.showErrorMessage(message);
       });
+      return true;
     } catch (error) {
       const message = `Error starting backend: ${error}`;
       this.serverOutputChannel.appendLine(`[ERROR] ${message}`);
       vscode.window.showErrorMessage(message);
+      return false;
     }
   }
 
@@ -139,7 +141,9 @@ export class BackendConnectionManager {
       ).getConfigPath();
 
       if (robocopConfigPath) {
-        vscode.window.showInformationMessage("Using Robocop Config File from .env: " + robocopConfigPath);
+        vscode.window.showInformationMessage(
+          "Using Robocop Config File from .env: " + robocopConfigPath,
+        );
       }
 
       if (!vsProjectRootDir) {
