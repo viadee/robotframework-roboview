@@ -1,7 +1,7 @@
 [tool.poetry]
-name = "StudiProjekt-RoboView"
-version = "0.1.0"
-description = ""
+name = "robotframework-roboview"
+version = "0.0.1"
+description = "RoboView is a Visual Studio Code extension designed to help you manage keywords within your Robot Framework projects and improve overall test quality through built-in Robocop integration. Its primary goal is to provide a comprehensive overview of all keywords and their relationships, making it easier to understand and maintain your test automation codebase."
 license = "Apache 2.0"
 authors = ["viadee Unternehmensberatung AG"]
 readme = "README.md"
