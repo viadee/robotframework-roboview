@@ -62,31 +62,7 @@ export class BackendConnectionManager {
       this.serverOutputChannel.appendLine(
         `Working Directory: ${workspaceFolder}`,
       );
-      this.serverOutputChannel.appendLine("─".repeat(50));
-
-      this.serverOutputChannel.appendLine(
-        "Checking if RoboView is installed...",
-      );
-      const checkProcess = spawnSync(
-        pythonInterpreterPath,
-        ["-m", "pip", "show", "roboview"],
-        {
-          cwd: workspaceFolder,
-          encoding: "utf8",
-        },
-      );
-
-      if (
-        checkProcess.status !== 0 ||
-        !checkProcess.stdout.includes("Name: roboview")
-      ) {
-        const errorMsg =
-          "RoboView is not installed. Please install it using: pip install roboview";
-        vscode.window.showErrorMessage(errorMsg);
-        return false;
-      }
-
-      this.serverOutputChannel.appendLine("✓ RoboView is installed");
+      this.serverOutputChannel.appendLine("Starting RoboView Server...");
       this.serverOutputChannel.appendLine("─".repeat(50));
 
       this.serverProcess = spawn(
@@ -108,27 +84,61 @@ export class BackendConnectionManager {
 
       this.serverProcess.stderr?.on("data", (data) => {
         const error = data.toString();
-        this.serverOutputChannel.appendLine(`${error}`);
+        this.serverOutputChannel.appendLine(error);
       });
 
       this.serverProcess.on("close", (code) => {
         const message = `Backend process exited with code ${code}`;
-        this.serverOutputChannel.appendLine(`${message}`);
+        this.serverOutputChannel.appendLine(message);
         vscode.window.showInformationMessage(message);
       });
 
-      this.serverProcess.on("error", (error) => {
-        const message = `Failed to start backend: ${error.message}`;
-        this.serverOutputChannel.appendLine(`[ERROR] ${message}`);
-        vscode.window.showErrorMessage(message);
-      });
+      const started = await this.checkServerProcessAlive();
+
+      if (!started) {
+        this.killServerProcess();
+        return false;
+      }
+
       return true;
     } catch (error) {
-      const message = `Error starting backend: ${error}`;
+      const message = `Error starting backend: ${error}. Please ensure that roboview is installed in the current Python environment.`;
       this.serverOutputChannel.appendLine(`[ERROR] ${message}`);
       vscode.window.showErrorMessage(message);
       return false;
     }
+  }
+
+  private checkServerProcessAlive(
+    timeoutMs: number = 120000,
+    intervalMs: number = 1000,
+  ): Promise<boolean> {
+    return new Promise((resolve) => {
+      const startTime = Date.now();
+
+      const onError = () => resolve(false);
+      const onClose = () => resolve(false);
+
+      this.serverProcess?.on("error", onError);
+      this.serverProcess?.on("close", onClose);
+
+      const interval = setInterval(async () => {
+        if (Date.now() - startTime > timeoutMs) {
+          clearInterval(interval);
+          this.serverProcess?.removeListener("error", onError);
+          this.serverProcess?.removeListener("close", onClose);
+          resolve(false);
+          return;
+        }
+
+        if (await this.isServerRunning()) {
+          clearInterval(interval);
+          this.serverProcess?.removeListener("error", onError);
+          this.serverProcess?.removeListener("close", onClose);
+          resolve(true);
+        }
+      }, intervalMs);
+    });
   }
 
   public async initializeServer(
