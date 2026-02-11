@@ -1,5 +1,5 @@
 # RoboView - Keyword Management in Robot Framework
-![banner](./static/github_banner.png)
+![banner](./resources/github_banner.png)
 [![PyPI version](https://img.shields.io/pypi/v/robotframework-roboview.svg)](https://pypi.org/project/robotframework-roboview/)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
 ![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
@@ -73,10 +73,10 @@ The **Dashboard** gives you a high‑level overview of the selected Robot Framew
 
 
 <p align="center">
-  <img src="./static/dashboard_1.png" alt="keyword_list" width="900"/>
+  <img src="./resources/dashboard_1.png" alt="keyword_list" width="900"/>
 </p>
 <p align="center">
-  <img src="./static/dashboard_2.png" alt="keyword_list" width="900"/>
+  <img src="./resources/dashboard_2.png" alt="keyword_list" width="900"/>
 </p>
 
 <br>
@@ -108,7 +108,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 </p>
 
 <p align="center">
-  <img src="./static/keyword_usage.png" alt="graph_view" width="900"/>
+  <img src="./resources/keyword_usage.png" alt="graph_view" width="900"/>
 </p>
 
 <br>
@@ -165,7 +165,7 @@ The **Robocop** view integrates the `https://robocop.readthedocs.io/` linter dir
 
 
 <p align="center">
-  <img src="./static/robocop.png" alt="robocop_issues" width="900"/>
+  <img src="./resources/robocop.png" alt="robocop_issues" width="900"/>
 </p>
 
 
