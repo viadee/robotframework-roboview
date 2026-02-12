@@ -4,7 +4,7 @@
   "publisher": "viadee",
   "repository": {
     "type": "git",
-    "url": "https://github.com/viadee-internal/StudiProjekt-RoboView"
+    "url": "https://github.com/viadee/robotframework-roboview"
   },
   "displayName": "RoboView",
   "description": "RoboView is a tool designed to support Robot Framework users in managing keywords and refactoring their codebase.",
