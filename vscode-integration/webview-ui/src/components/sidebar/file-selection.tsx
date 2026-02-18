@@ -30,13 +30,13 @@ export default function FileSelector({
       <select
         id="resource"
         className="filter-select"
-        value={selectedResource?.file_name || ""}
+        value={selectedResource?.path || ""}
         onChange={(e) => {
-          const fileName = e.target.value;
-          if (fileName === "") {
+          const path = e.target.value;
+          if (path === "") {
             onResourceChange(null);
           } else {
-            const selected = file_list.find((f) => f.file_name === fileName);
+            const selected = file_list.find((f) => f.path === path);
             onResourceChange(selected || null);
           }
         }}
@@ -45,7 +45,7 @@ export default function FileSelector({
         {resourceFiles.length > 0 && (
           <optgroup label="Resource files">
             {resourceFiles.map((resource) => (
-              <option key={resource.path} value={resource.file_name}>
+              <option key={resource.path} value={resource.path}>
                 {resource.file_name}
               </option>
             ))}
@@ -54,7 +54,7 @@ export default function FileSelector({
         {robotFiles.length > 0 && (
           <optgroup label="Robot files">
             {robotFiles.map((resource) => (
-              <option key={resource.path} value={resource.file_name}>
+              <option key={resource.path} value={resource.path}>
                 {resource.file_name}
               </option>
             ))}

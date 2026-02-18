@@ -30,7 +30,7 @@ class FileRegistry:
 
         """
         try:
-            self._file_registry[file.file_name] = file
+            self._file_registry[file.path] = file
 
         except Exception:
             logger.exception("Failed to register file: %s", file.path)
