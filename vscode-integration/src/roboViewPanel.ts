@@ -72,6 +72,8 @@ export class RoboViewPanel {
         },
       );
 
+      panel.iconPath = Uri.joinPath(extensionUri, "resources", "icon.png");
+
       RoboViewPanel.currentPanel = new RoboViewPanel(
         panel,
         extensionUri,
