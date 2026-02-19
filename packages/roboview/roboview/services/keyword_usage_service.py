@@ -410,7 +410,7 @@ class KeywordUsageService:
         """Get called keywords for a Robot Framework file.
 
         Arguments:
-            file_path (str): Path of the file to fetch initialized keywords from.
+            file_path (str): Path of the file to fetch called keywords from.
 
         Returns:
             list: List of called keywords for the target file.

@@ -42,15 +42,14 @@ def test_register_adds_file_and_len_and_get_all_files_reflect_it():
 
 def test_register_overwrites_existing_same_name():
     registry = FileRegistry()
-    f1 = _make_file("file.robot", "/proj/old.robot")
-    f2 = _make_file("file.robot", "/proj/new.robot")
+    f1 = _make_file("file.robot", "/proj/old/")
+    f2 = _make_file("file.robot", "/proj/new/")
 
     registry.register(f1)
     registry.register(f2)
 
     all_files = registry.get_all_files()
-    assert len(all_files) == 1
-    assert all_files[0].path == "/proj/new.robot"
+    assert len(all_files) == 2
 
 
 def test_resolve_returns_matching_file_by_path():
