@@ -8,11 +8,11 @@ from robot.api.parsing import (
 from robot.parsing.model.statements import (
     KeywordCall,
     Setup,
+    SuiteSetup,
+    SuiteTeardown,
     Teardown,
     TestSetup,
     TestTeardown,
-    SuiteSetup,
-    SuiteTeardown
 )
 
 logger = logging.getLogger(__name__)
@@ -58,7 +58,7 @@ class CalledKeywordFinder(ModelVisitor):
 
         Arguments:
             node (SuiteSetup): SuiteSetup node in the AST.
-            
+
         """
         self._add_keyword(node.name)
 
