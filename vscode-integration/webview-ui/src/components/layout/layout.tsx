@@ -1,167 +1,100 @@
-import { ReactNode, useState, useRef, useCallback, useEffect } from "react";
+import {
+  ReactNode,
+  createContext,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import type { PanelImperativeHandle } from "react-resizable-panels";
+import {
+  ResizablePanelGroup,
+  ResizablePanel,
+  ResizableHandle,
+} from "../ui/resizable";
 
-interface LayoutProps {
-  sidebar: ReactNode;
-  mainContent: ReactNode;
-  detailsPanel: ReactNode;
+interface UsageLayoutContextValue {
+  isDetailsCollapsed: boolean;
+  toggleDetails: () => void;
 }
 
-export default function Layout({
+const UsageLayoutContext = createContext<UsageLayoutContextValue | null>(null);
+
+export function useUsageLayoutControls() {
+  return useContext(UsageLayoutContext);
+}
+
+interface AppLayoutProps {
+  sidebar: ReactNode;
+  content: ReactNode;
+  details: ReactNode;
+  sidebarSize?: number;
+  contentSize?: number;
+  detailsSize?: number;
+}
+
+export function AppLayout({
   sidebar,
-  mainContent,
-  detailsPanel,
-}: LayoutProps) {
-  const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(true);
-  const [isResizing, setIsResizing] = useState(false);
-  const [detailsWidthFr, setDetailsWidthFr] = useState(3);
-  const [detailsWidthPx, setDetailsWidthPx] = useState(450);
-  const containerRef = useRef<HTMLDivElement>(null);
+  content,
+  details,
+  sidebarSize = 20,
+  contentSize = 55,
+  detailsSize = 25,
+}: AppLayoutProps) {
+  const detailsPanelRef = useRef<PanelImperativeHandle | null>(null);
+  const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
 
-  const gridLayout = {
-    sidebar: 2,
-    mainContent: 5,
-    details: detailsWidthFr,
-  };
-
-  const startResizing = useCallback(() => {
-    setIsResizing(true);
-  }, []);
-
-  const stopResizing = useCallback(() => {
-    setIsResizing(false);
-  }, []);
-
-  const resize = useCallback(
-    (e: MouseEvent) => {
-      if (isResizing && containerRef.current) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const containerWidth = containerRect.width;
-        const rightEdgeDistance = containerRect.right - e.clientX;
-
-        // Update pixel width for button positioning
-        setDetailsWidthPx(rightEdgeDistance);
-
-        const totalFr =
-          gridLayout.sidebar + gridLayout.mainContent + gridLayout.details;
-        const pixelPerFr = containerWidth / totalFr;
-        const newDetailsFr = rightEdgeDistance / pixelPerFr;
-
-        // Min: 2fr (~20%), Max: 6fr (~60%)
-        if (newDetailsFr >= 2 && newDetailsFr <= 6) {
-          setDetailsWidthFr(newDetailsFr);
-        }
-      }
-    },
-    [
-      isResizing,
-      gridLayout.sidebar,
-      gridLayout.mainContent,
-      gridLayout.details,
-    ],
-  );
-
-  // Calculate details width on mount and window resize
-  useEffect(() => {
-    const updateDetailsWidth = () => {
-      if (containerRef.current && isDetailsPanelOpen) {
-        const containerRect = containerRef.current.getBoundingClientRect();
-        const containerWidth = containerRect.width;
-        const totalFr =
-          gridLayout.sidebar + gridLayout.mainContent + detailsWidthFr;
-        const pixelPerFr = containerWidth / totalFr;
-        const calculatedWidth = detailsWidthFr * pixelPerFr;
-        setDetailsWidthPx(calculatedWidth);
-      }
-    };
-
-    updateDetailsWidth();
-    window.addEventListener("resize", updateDetailsWidth);
-
-    return () => {
-      window.removeEventListener("resize", updateDetailsWidth);
-    };
-  }, [
-    isDetailsPanelOpen,
-    detailsWidthFr,
-    gridLayout.sidebar,
-    gridLayout.mainContent,
-  ]);
-
-  useEffect(() => {
-    if (isResizing) {
-      window.addEventListener("mousemove", resize as any);
-      window.addEventListener("mouseup", stopResizing);
-      document.body.style.cursor = "col-resize";
-      document.body.style.userSelect = "none";
-    } else {
-      window.removeEventListener("mousemove", resize as any);
-      window.removeEventListener("mouseup", stopResizing);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
+  const handleToggleDetails = () => {
+    if (!detailsPanelRef.current) {
+      return;
     }
 
-    return () => {
-      window.removeEventListener("mousemove", resize as any);
-      window.removeEventListener("mouseup", stopResizing);
-      document.body.style.cursor = "";
-      document.body.style.userSelect = "";
-    };
-  }, [isResizing, resize, stopResizing]);
+    if (isDetailsCollapsed) {
+      detailsPanelRef.current.expand();
+      setIsDetailsCollapsed(false);
+      return;
+    }
 
-  const toggleDetailsPanel = () => {
-    setIsDetailsPanelOpen(!isDetailsPanelOpen);
+    detailsPanelRef.current.collapse();
+    setIsDetailsCollapsed(true);
   };
 
-  // Grid-Spalten mit fr-Einheiten und smooth transition
-  const gridTemplateColumns = isDetailsPanelOpen
-    ? `${gridLayout.sidebar}fr ${gridLayout.mainContent}fr ${detailsWidthFr}fr`
-    : `${gridLayout.sidebar}fr ${gridLayout.mainContent + detailsWidthFr}fr 0fr`;
+  const contextValue = useMemo(
+    () => ({
+      isDetailsCollapsed,
+      toggleDetails: handleToggleDetails,
+    }),
+    [isDetailsCollapsed],
+  );
 
   return (
-    <div
-      className={`layout-container ${isResizing ? "resizing" : ""}`}
-      ref={containerRef}
-      style={{
-        gridTemplateColumns,
-        gridTemplateRows: "1fr",
-        // CSS Variable für Toggle-Button Position
-        ["--details-width" as any]: `${detailsWidthPx}px`,
-      }}
-    >
-      <div className="sidebar-section">{sidebar}</div>
+    <UsageLayoutContext.Provider value={contextValue}>
+      <ResizablePanelGroup orientation="horizontal" className="h-full">
+        <ResizablePanel defaultSize={sidebarSize} minSize={15}>
+          <div className="h-full overflow-auto">{sidebar}</div>
+        </ResizablePanel>
 
-      <div className="main-content-section">{mainContent}</div>
+        <ResizableHandle withHandle />
 
-      {/* Details Panel wird immer gerendert */}
-      <div
-        className={`details-panel-section ${isDetailsPanelOpen ? "open" : "closed"}`}
-      >
-        {isDetailsPanelOpen && (
-          <>
-            {/* Resize handle nur wenn offen */}
-            <div
-              className="resize-handle"
-              onMouseDown={startResizing}
-              title="Drag to resize details panel"
-            />
-            {detailsPanel}
-          </>
-        )}
-      </div>
+        <ResizablePanel defaultSize={contentSize} minSize={30}>
+          <div className="h-full overflow-auto">{content}</div>
+        </ResizablePanel>
 
-      {/* Toggle button - IMMER SICHTBAR mit fixed positioning */}
-      <button
-        className={`details-toggle-btn ${isDetailsPanelOpen ? "open" : "closed"}`}
-        onClick={toggleDetailsPanel}
-        title={
-          isDetailsPanelOpen ? "Close Details Panel" : "Open Details Panel"
-        }
-        aria-label={
-          isDetailsPanelOpen ? "Close Details Panel" : "Open Details Panel"
-        }
-      >
-        {isDetailsPanelOpen ? "›" : "‹"}
-      </button>
-    </div>
+        <ResizableHandle withHandle />
+
+        <ResizablePanel
+          panelRef={detailsPanelRef}
+          defaultSize={detailsSize}
+          minSize={15}
+          collapsible
+          collapsedSize={0}
+          onResize={(panelSize) => {
+            setIsDetailsCollapsed(panelSize.asPercentage <= 0);
+          }}
+        >
+          <div className="h-full overflow-auto">{details}</div>
+        </ResizablePanel>
+      </ResizablePanelGroup>
+    </UsageLayoutContext.Provider>
   );
 }
