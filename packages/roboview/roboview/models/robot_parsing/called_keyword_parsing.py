@@ -11,6 +11,8 @@ from robot.parsing.model.statements import (
     Teardown,
     TestSetup,
     TestTeardown,
+    SuiteSetup,
+    SuiteTeardown
 )
 
 logger = logging.getLogger(__name__)
@@ -66,6 +68,22 @@ class CalledKeywordFinder(ModelVisitor):
         Arguments:
             node (Teardown): Teardown node in the AST.
 
+        """
+        self._add_keyword(node.name)
+
+    def visit_SuiteSetup(self, node: SuiteSetup) -> None:  # noqa: N802
+        """Visit a SuiteSetup node and extract the keyword.
+
+        Arguments:
+            node (SuiteSetup): SuiteSetup node in the AST.
+        """
+        self._add_keyword(node.name)
+
+    def visit_SuiteTeardown(self, node: SuiteTeardown) -> None:  # noqa: N802
+        """Visit a SuiteTeardown node and extract the keyword.
+
+        Arguments:
+            node (SuiteTeardown): SuiteTeardown node in the AST.
         """
         self._add_keyword(node.name)
 
