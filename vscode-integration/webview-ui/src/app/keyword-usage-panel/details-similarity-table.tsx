@@ -52,87 +52,94 @@ export function DetailsSimilarityTable({
 
   return (
     <div className="overflow-hidden rounded-md border border-border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="px-3 py-2 text-xs uppercase tracking-wider">
-              Keyword
-            </TableHead>
-            <TableHead className="px-3 py-2 text-right text-xs uppercase tracking-wider">
-              <span className="inline-flex items-center gap-1">
-                Similarity
-                <HoverCard openDelay={150} closeDelay={100}>
-                  <HoverCardTrigger asChild>
-                    <button
-                      type="button"
-                      className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
-                      aria-label="How similarity is calculated"
-                    >
-                      <CircleHelp className="size-3.5" />
-                    </button>
-                  </HoverCardTrigger>
-                  <HoverCardContent
-                    align="end"
-                    className="w-80 text-left text-xs normal-case tracking-normal leading-relaxed"
-                  >
-                    <p className="whitespace-pre-line">{similarityInfoText}</p>
-                  </HoverCardContent>
-                </HoverCard>
-              </span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {keywordSimilarity.length === 0 && (
+      <div className="max-h-90 overflow-y-auto">
+        <Table className="table-fixed">
+          <TableHeader>
             <TableRow>
-              <TableCell
-                colSpan={2}
-                className="px-3 py-3 text-sm text-muted-foreground"
-              >
-                No similar keywords found
-              </TableCell>
+              <TableHead className="px-3 py-2 text-xs uppercase tracking-wider">
+                Keyword
+              </TableHead>
+              <TableHead className="w-28 px-3 py-2 text-right text-xs uppercase tracking-wider">
+                <span className="inline-flex items-center gap-1">
+                  Similarity
+                  <HoverCard openDelay={150} closeDelay={100}>
+                    <HoverCardTrigger asChild>
+                      <button
+                        type="button"
+                        className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+                        aria-label="How similarity is calculated"
+                      >
+                        <CircleHelp className="size-3.5" />
+                      </button>
+                    </HoverCardTrigger>
+                    <HoverCardContent
+                      align="end"
+                      className="w-80 text-left text-xs normal-case tracking-normal leading-relaxed"
+                    >
+                      <p className="whitespace-pre-line">
+                        {similarityInfoText}
+                      </p>
+                    </HoverCardContent>
+                  </HoverCard>
+                </span>
+              </TableHead>
             </TableRow>
-          )}
-
-          {keywordSimilarity.map((item) => {
-            const percentage = Math.round(item.score * 100);
-            const sourcePath =
-              keywordSimilaritySources[item.keyword_name_without_prefix];
-            const hasSource = Boolean(sourcePath);
-
-            return (
-              <TableRow
-                key={`${item.keyword_id}-${item.keyword_name_without_prefix}`}
-              >
+          </TableHeader>
+          <TableBody>
+            {keywordSimilarity.length === 0 && (
+              <TableRow>
                 <TableCell
-                  className="px-3 py-2 text-sm"
-                  title={sourcePath ?? ""}
-                  onClick={(event) =>
-                    handleKeywordClick(event, item.keyword_name_without_prefix)
-                  }
+                  colSpan={2}
+                  className="px-3 py-3 text-sm text-muted-foreground"
                 >
-                  <span
-                    className={
-                      hasSource
-                        ? "cursor-pointer text-primary hover:underline"
-                        : ""
-                    }
-                  >
-                    {item.keyword_name_without_prefix}
-                  </span>
-                </TableCell>
-                <TableCell className="px-3 py-2 text-right">
-                  <Badge
-                    className={`px-2 py-0.5 text-xs ${getSimilarityBadgeClass(percentage)}`}
-                  >
-                    {percentage}%
-                  </Badge>
+                  No similar keywords found
                 </TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+            )}
+
+            {keywordSimilarity.map((item) => {
+              const percentage = Math.round(item.score * 100);
+              const sourcePath =
+                keywordSimilaritySources[item.keyword_name_without_prefix];
+              const hasSource = Boolean(sourcePath);
+
+              return (
+                <TableRow
+                  key={`${item.keyword_id}-${item.keyword_name_without_prefix}`}
+                >
+                  <TableCell
+                    className="max-w-0 px-3 py-2 text-sm"
+                    title={item.keyword_name_with_prefix ?? ""}
+                    onClick={(event) =>
+                      handleKeywordClick(
+                        event,
+                        item.keyword_name_without_prefix,
+                      )
+                    }
+                  >
+                    <span
+                      className={
+                        hasSource
+                          ? "block truncate cursor-pointer text-foreground/90 hover:text-primary hover:underline"
+                          : "block truncate"
+                      }
+                    >
+                      {item.keyword_name_without_prefix}
+                    </span>
+                  </TableCell>
+                  <TableCell className="w-28 px-3 py-2 text-right">
+                    <Badge
+                      className={`px-2 py-0.5 text-xs ${getSimilarityBadgeClass(percentage)}`}
+                    >
+                      {percentage}%
+                    </Badge>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
     </div>
   );
 }
