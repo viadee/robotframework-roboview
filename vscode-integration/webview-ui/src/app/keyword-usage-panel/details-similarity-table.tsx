@@ -1,5 +1,10 @@
 import { Badge } from "@/components/ui/badge";
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
   Table,
   TableBody,
   TableCell,
@@ -7,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { CircleHelp } from "lucide-react";
 import { KeywordSimilarity } from "@/types/keywords";
 import { vscode } from "@/utilities/vscode";
 
@@ -14,6 +20,13 @@ interface DetailsSimilarityTableProps {
   keywordSimilarity: KeywordSimilarity[];
   keywordSimilaritySources: Record<string, string>;
 }
+
+const similarityInfoText =
+  "The similarity score compares the source code of each keyword using text analysis:\n\n" +
+  "1. Each keyword's code is tokenized and transformed into a vector based on word frequencies.\n" +
+  "2. The vectors are compared using cosine similarity to measure how closely code structure and content match.\n" +
+  "3. The result is shown as a percentage: 100% means identical code, lower values indicate less similarity.\n\n" +
+  "Note: Starting at 80% similarity, the badge is shown in red, which may indicate a potential duplicate.";
 
 function getSimilarityBadgeClass(percentage: number) {
   if (percentage > 80) {
@@ -46,7 +59,26 @@ export function DetailsSimilarityTable({
               Keyword
             </TableHead>
             <TableHead className="px-3 py-2 text-right text-xs uppercase tracking-wider">
-              Similarity
+              <span className="inline-flex items-center gap-1">
+                Similarity
+                <HoverCard openDelay={150} closeDelay={100}>
+                  <HoverCardTrigger asChild>
+                    <button
+                      type="button"
+                      className="inline-flex items-center text-muted-foreground transition-colors hover:text-foreground"
+                      aria-label="How similarity is calculated"
+                    >
+                      <CircleHelp className="size-3.5" />
+                    </button>
+                  </HoverCardTrigger>
+                  <HoverCardContent
+                    align="end"
+                    className="w-80 text-left text-xs normal-case tracking-normal leading-relaxed"
+                  >
+                    <p className="whitespace-pre-line">{similarityInfoText}</p>
+                  </HoverCardContent>
+                </HoverCard>
+              </span>
             </TableHead>
           </TableRow>
         </TableHeader>
