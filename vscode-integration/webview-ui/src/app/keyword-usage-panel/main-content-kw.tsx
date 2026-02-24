@@ -34,7 +34,9 @@ type SortOption =
   | "default"
   | "name_asc"
   | "name_desc"
+  | "file_usages_asc"
   | "file_usages_desc"
+  | "total_usages_asc"
   | "total_usages_desc";
 const PAGE_SIZE = 25;
 
@@ -126,9 +128,21 @@ export function MainContentKeywordUsage({
       );
     }
 
+    if (sortBy === "file_usages_asc") {
+      return [...filtered].sort(
+        (left, right) => left.file_usages - right.file_usages,
+      );
+    }
+
     if (sortBy === "total_usages_desc") {
       return [...filtered].sort(
         (left, right) => right.total_usages - left.total_usages,
+      );
+    }
+
+    if (sortBy === "total_usages_asc") {
+      return [...filtered].sort(
+        (left, right) => left.total_usages - right.total_usages,
       );
     }
 
@@ -188,7 +202,7 @@ export function MainContentKeywordUsage({
           value={sortBy}
           onValueChange={(value) => setSortBy(value as SortOption)}
         >
-          <SelectTrigger className="h-9 w-44 bg-input text-sm border-border">
+          <SelectTrigger className="h-9 w-56 bg-input text-sm border-border">
             <SelectValue placeholder="Sort: Default" />
           </SelectTrigger>
           <SelectContent>
@@ -196,10 +210,16 @@ export function MainContentKeywordUsage({
             <SelectItem value="name_asc">Sort: Name (A-Z)</SelectItem>
             <SelectItem value="name_desc">Sort: Name (Z-A)</SelectItem>
             <SelectItem value="file_usages_desc">
-              Sort: Usages In File
+              Sort: Usages In File (High-Low)
+            </SelectItem>
+            <SelectItem value="file_usages_asc">
+              Sort: Usages In File (Low-High)
             </SelectItem>
             <SelectItem value="total_usages_desc">
-              Sort: Total Usages
+              Sort: Total Usages (High-Low)
+            </SelectItem>
+            <SelectItem value="total_usages_asc">
+              Sort: Total Usages (Low-High)
             </SelectItem>
           </SelectContent>
         </Select>

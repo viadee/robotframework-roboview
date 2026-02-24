@@ -108,7 +108,7 @@ export function MainContentRobocop({
           value={sortBy}
           onValueChange={(value) => onSortChange(value as SortOption)}
         >
-          <SelectTrigger className="h-9 w-44 bg-input text-sm border-border">
+          <SelectTrigger className="h-9 w-56 bg-input text-sm border-border">
             <SelectValue placeholder="Sort: Default" />
           </SelectTrigger>
           <SelectContent>
