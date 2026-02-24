@@ -1,25 +1,23 @@
-import React, { useState } from "react";
-import Header from "./components/layout/header";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { Header } from "./components/layout/header";
 import Footer from "./components/layout/footer";
-import DashboardView from "./app/dashboard/page";
-import KeywordUsageView from "./app/keyword-usage/page";
-import RobocopMessageView from "./app/robocop/page";
-import "./App.css";
+import KeywordUsagePage from "./app/keyword-usage-panel/page";
+import RobocopPage from "./app/robocop-panel/page";
+import DashboardPage from "./app/dashboard/page";
 
-function App() {
-  const [currentView, setCurrentView] = useState<
-    "dashboard" | "keyword-usage" | "robocop"
-  >("dashboard");
-
+export function App() {
   return (
-    <div className="app">
-      <Header currentView={currentView} onViewChange={setCurrentView} />
-      {currentView === "dashboard" && <DashboardView />}
-      {currentView === "keyword-usage" && <KeywordUsageView />}
-      {currentView === "robocop" && <RobocopMessageView />}
+    <div className="h-screen w-screen flex flex-col overflow-hidden">
+      <Header />
+      <main className="flex-1 overflow-hidden pb-10">
+        <Routes>
+          <Route path="*" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/keyword-usage" element={<KeywordUsagePage />} />
+          <Route path="/robocop" element={<RobocopPage />} />
+        </Routes>
+      </main>
       <Footer />
     </div>
   );
 }
-
-export default App;
