@@ -59,7 +59,7 @@ export function DetailsUsageTable({ files }: DetailsUsageTableProps) {
                 </span>
               </TableCell>
               <TableCell className="px-3 py-2 text-right">
-                <Badge className="bg-chart-1/20 px-2 py-0.5 text-xs text-chart-1">
+                <Badge className="bg-chart-1/30 px-2 py-0.5 text-xs text-foreground">
                   {file.usages}
                 </Badge>
               </TableCell>

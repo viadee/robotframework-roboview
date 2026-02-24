@@ -22,12 +22,12 @@ export function FilterButton({
       className={cn(
         "flex w-full items-center justify-between rounded-md px-3 py-1.5 text-left text-sm transition-all duration-150",
         isActive
-          ? "bg-primary text-primary-foreground shadow-sm"
+          ? "bg-primary/30 text-primary-foreground shadow-sm"
           : "text-foreground hover:bg-accent hover:text-accent-foreground",
       )}
     >
       <span className="flex-1 pr-2 font-medium leading-snug">{label}</span>
-      <Badge className="shrink-0 border-transparent bg-primary-foreground/20 text-destructive-foreground text-xs font-semibold">
+      <Badge className="shrink-0 border-transparent bg-primary/20 text-foreground text-xs font-semibold">
         {count}
       </Badge>
     </button>

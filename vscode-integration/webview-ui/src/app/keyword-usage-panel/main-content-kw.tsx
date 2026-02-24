@@ -52,18 +52,18 @@ interface MainContentKeywordUsageProps {
 
 function getUsageBadgeClass(totalUsages: number) {
   if (totalUsages === 0) {
-    return "bg-destructive/20 text-destructive";
+    return "bg-destructive/30 text-foreground";
   }
 
   if (totalUsages <= 10) {
-    return "bg-chart-4/20 text-chart-4";
+    return "bg-orange-400/30 text-foreground";
   }
 
   if (totalUsages <= 30) {
-    return "bg-chart-2/20 text-chart-3";
+    return "bg-emerald-400/30 text-foreground";
   }
 
-  return "bg-chart-3/20 text-chart-3";
+  return "bg-chart-1/20 text-foreground";
 }
 
 function isUserSource(source: string) {
@@ -192,7 +192,7 @@ export function MainContentKeywordUsage({
           value={sortBy}
           onValueChange={(value) => setSortBy(value as SortOption)}
         >
-          <SelectTrigger className="h-9 w-44 bg-input text-sm">
+          <SelectTrigger className="h-9 w-44 bg-input text-sm border-border">
             <SelectValue placeholder="Sort: Default" />
           </SelectTrigger>
           <SelectContent>
@@ -212,7 +212,7 @@ export function MainContentKeywordUsage({
           placeholder="Search Keywords..."
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.target.value)}
-          className="h-9 flex-1 bg-input text-sm"
+          className="h-9 flex-1 bg-input text-sm border-border"
         />
 
         <Button
@@ -253,16 +253,16 @@ export function MainContentKeywordUsage({
         <Table className="w-full table-fixed border-collapse">
           <TableHeader className="sticky top-0 z-10 bg-background">
             <TableRow className="border-b border-border">
-              <TableHead className="w-[50%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+              <TableHead className="w-[42%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
                 Keyword
               </TableHead>
               <TableHead className="w-[22%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
                 Initialized In
               </TableHead>
-              <TableHead className="w-[14%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+              <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
                 Usages In File
               </TableHead>
-              <TableHead className="w-[14%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+              <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
                 Total Usages
               </TableHead>
             </TableRow>

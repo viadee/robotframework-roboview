@@ -17,10 +17,10 @@ interface DetailsSimilarityTableProps {
 
 function getSimilarityBadgeClass(percentage: number) {
   if (percentage > 80) {
-    return "bg-destructive/20 text-destructive";
+    return "bg-destructive/30 text-foreground";
   }
 
-  return "bg-chart-1/20 text-chart-1";
+  return "bg-chart-1/30 text-foreground";
 }
 
 export function DetailsSimilarityTable({

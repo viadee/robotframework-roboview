@@ -38,7 +38,7 @@ export function DetailsPanelKeywordUsage({
         <div className="flex-1 overflow-auto px-4 py-4 space-y-5">
           <div className="space-y-2">
             <DetailsSectionTitle title="Documentation" />
-            <div className="rounded-md border border-border bg-input px-3 py-2 text-sm leading-relaxed text-foreground">
+            <div className="whitespace-pre-wrap rounded-md border border-border bg-input px-3 py-2 text-sm leading-relaxed text-foreground">
               {selectedKeyword.documentation || "No [Documentation] defined"}
             </div>
           </div>

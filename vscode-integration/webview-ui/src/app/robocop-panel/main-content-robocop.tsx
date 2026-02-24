@@ -52,7 +52,7 @@ interface MainContentRobocopProps {
 
 function getSeverityBadgeClass(severity: string) {
   if (severity === "E") {
-    return "bg-destructive text-destructive-foreground";
+    return "bg-destructive text-primary-foreground";
   }
 
   if (severity === "W") {
@@ -112,7 +112,7 @@ export function MainContentRobocop({
           value={sortBy}
           onValueChange={(value) => onSortChange(value as SortOption)}
         >
-          <SelectTrigger className="h-9 w-44 bg-input text-sm">
+          <SelectTrigger className="h-9 w-44 bg-input text-sm border-border">
             <SelectValue placeholder="Sort: Default" />
           </SelectTrigger>
           <SelectContent>
@@ -132,7 +132,7 @@ export function MainContentRobocop({
           placeholder="Search Messages..."
           value={searchTerm}
           onChange={(event) => onSearchChange(event.target.value)}
-          className="h-9 flex-1 bg-input text-sm"
+          className="h-9 flex-1 bg-input text-sm border-border"
         />
 
         <Button variant="default" size="default" onClick={onClearSearch}>
@@ -172,13 +172,13 @@ export function MainContentRobocop({
               <TableHead className="w-[16%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
                 Rule ID
               </TableHead>
-              <TableHead className="w-[46%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+              <TableHead className="w-[40%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
                 Message
               </TableHead>
               <TableHead className="w-[28%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
                 Source
               </TableHead>
-              <TableHead className="w-[10%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+              <TableHead className="w-[16%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
                 Severity
               </TableHead>
             </TableRow>
