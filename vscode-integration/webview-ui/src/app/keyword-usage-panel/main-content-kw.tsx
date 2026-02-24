@@ -181,10 +181,6 @@ export function MainContentKeywordUsage({
     return <NoFileSelected />;
   }
 
-  if (filteredKeywords.length === 0) {
-    return <NoKeywordFound />;
-  }
-
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <div className="flex w-full items-center gap-3">
@@ -250,98 +246,104 @@ export function MainContentKeywordUsage({
       </div>
 
       <div className="flex-1 overflow-auto rounded-md border border-border">
-        <Table className="w-full table-fixed border-collapse">
-          <TableHeader className="sticky top-0 z-10 bg-background">
-            <TableRow className="border-b border-border">
-              <TableHead className="w-[42%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
-                Keyword
-              </TableHead>
-              <TableHead className="w-[22%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
-                Initialized In
-              </TableHead>
-              <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
-                Usages In File
-              </TableHead>
-              <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
-                Total Usages
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedKeywords.map((keyword) => {
-              const isSelected = selectedKeywordId === keyword.keyword_id;
-              const sourceType = isUserSource(keyword.source)
-                ? "user"
-                : "external";
+        {filteredKeywords.length === 0 ? (
+          <NoKeywordFound />
+        ) : (
+          <Table className="w-full table-fixed border-collapse">
+            <TableHeader className="sticky top-0 z-10 bg-background">
+              <TableRow className="border-b border-border">
+                <TableHead className="w-[42%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Keyword
+                </TableHead>
+                <TableHead className="w-[22%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Initialized In
+                </TableHead>
+                <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Usages In File
+                </TableHead>
+                <TableHead className="w-[18%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Total Usages
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedKeywords.map((keyword) => {
+                const isSelected = selectedKeywordId === keyword.keyword_id;
+                const sourceType = isUserSource(keyword.source)
+                  ? "user"
+                  : "external";
 
-              return (
-                <TableRow
-                  key={keyword.keyword_id}
-                  onClick={() => onKeywordSelect(keyword)}
-                  className={cn(
-                    "cursor-pointer border-b border-border/60 transition-colors hover:bg-accent/40",
-                    isSelected && "bg-accent",
-                  )}
-                >
-                  <TableCell className="px-4 py-3 text-sm">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <Badge
-                        className={cn(
-                          "h-5 w-5 rounded-sm p-0 text-[10px] font-bold",
-                          sourceType === "user"
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-chart-4 text-primary-foreground",
-                        )}
-                      >
-                        {sourceType === "user" ? "U" : "E"}
-                      </Badge>
-                      <span
-                        className="block truncate"
-                        title={keyword.keyword_name_with_prefix}
-                      >
-                        {keyword.keyword_name_without_prefix}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell
-                    className="px-4 py-3 text-sm text-muted-foreground"
-                    onClick={(event) =>
-                      handleSourceClick(event, keyword.source)
-                    }
-                    title={keyword.source}
+                return (
+                  <TableRow
+                    key={keyword.keyword_id}
+                    onClick={() => onKeywordSelect(keyword)}
+                    className={cn(
+                      "cursor-pointer border-b border-border/60 transition-colors hover:bg-accent/40",
+                      isSelected && "bg-accent",
+                    )}
                   >
-                    <span
-                      className="block cursor-pointer truncate text-primary hover:underline"
+                    <TableCell className="px-4 py-3 text-sm">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <Badge
+                          className={cn(
+                            "h-5 w-5 rounded-sm p-0 text-[10px] font-bold",
+                            sourceType === "user"
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-chart-4 text-primary-foreground",
+                          )}
+                        >
+                          {sourceType === "user" ? "U" : "E"}
+                        </Badge>
+                        <span
+                          className="block truncate"
+                          title={keyword.keyword_name_with_prefix}
+                        >
+                          {keyword.keyword_name_without_prefix}
+                        </span>
+                      </div>
+                    </TableCell>
+                    <TableCell
+                      className="px-4 py-3 text-sm text-muted-foreground"
+                      onClick={(event) =>
+                        handleSourceClick(event, keyword.source)
+                      }
                       title={keyword.source}
                     >
-                      {keyword.file_name}
-                    </span>
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-center text-sm">
-                    {keyword.file_usages}
-                  </TableCell>
-                  <TableCell className="px-4 py-3 text-center text-sm">
-                    <Badge
-                      className={cn(
-                        "px-2 py-0.5 text-xs",
-                        getUsageBadgeClass(keyword.total_usages),
-                      )}
-                    >
-                      {keyword.total_usages}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                      <span
+                        className="block cursor-pointer truncate text-primary hover:underline"
+                        title={keyword.source}
+                      >
+                        {keyword.file_name}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-center text-sm">
+                      {keyword.file_usages}
+                    </TableCell>
+                    <TableCell className="px-4 py-3 text-center text-sm">
+                      <Badge
+                        className={cn(
+                          "px-2 py-0.5 text-xs",
+                          getUsageBadgeClass(keyword.total_usages),
+                        )}
+                      >
+                        {keyword.total_usages}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      {filteredKeywords.length > 0 && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }

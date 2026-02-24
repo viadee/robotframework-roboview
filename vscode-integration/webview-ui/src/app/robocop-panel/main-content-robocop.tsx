@@ -101,10 +101,6 @@ export function MainContentRobocop({
     }
   };
 
-  if (messagesToShow.length === 0) {
-    return <NoRobocopIssuesFound />;
-  }
-
   return (
     <div className="flex h-full flex-col gap-4 p-4">
       <div className="flex w-full items-center gap-3">
@@ -166,92 +162,98 @@ export function MainContentRobocop({
       </div>
 
       <div className="flex-1 overflow-auto rounded-md border border-border">
-        <Table className="w-full table-fixed border-collapse">
-          <TableHeader className="sticky top-0 z-10 bg-background">
-            <TableRow className="border-b border-border">
-              <TableHead className="w-[16%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
-                Rule ID
-              </TableHead>
-              <TableHead className="w-[40%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
-                Message
-              </TableHead>
-              <TableHead className="w-[28%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
-                Source
-              </TableHead>
-              <TableHead className="w-[16%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
-                Severity
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {paginatedMessages.map((messageData) => {
-              const isSelected =
-                selectedMessage?.message_id === messageData.message_id;
+        {messagesToShow.length === 0 ? (
+          <NoRobocopIssuesFound />
+        ) : (
+          <Table className="w-full table-fixed border-collapse">
+            <TableHeader className="sticky top-0 z-10 bg-background">
+              <TableRow className="border-b border-border">
+                <TableHead className="w-[16%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Rule ID
+                </TableHead>
+                <TableHead className="w-[40%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Message
+                </TableHead>
+                <TableHead className="w-[28%] px-4 py-3 text-left text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Source
+                </TableHead>
+                <TableHead className="w-[16%] px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-foreground">
+                  Severity
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {paginatedMessages.map((messageData) => {
+                const isSelected =
+                  selectedMessage?.message_id === messageData.message_id;
 
-              return (
-                <TableRow
-                  key={messageData.message_id}
-                  onClick={() => onMessageSelect(messageData)}
-                  className={cn(
-                    "cursor-pointer border-b border-border/60 transition-colors hover:bg-accent/40",
-                    isSelected && "bg-accent",
-                  )}
-                >
-                  <TableCell className="px-4 py-3 text-sm">
-                    <div className="flex min-w-0 items-center gap-2">
-                      <Badge
-                        className={cn(
-                          "h-6 rounded-sm px-2 text-xs font-bold",
-                          getSeverityBadgeClass(messageData.severity),
-                        )}
-                      >
-                        {messageData.severity}
-                      </Badge>
+                return (
+                  <TableRow
+                    key={messageData.message_id}
+                    onClick={() => onMessageSelect(messageData)}
+                    className={cn(
+                      "cursor-pointer border-b border-border/60 transition-colors hover:bg-accent/40",
+                      isSelected && "bg-accent",
+                    )}
+                  >
+                    <TableCell className="px-4 py-3 text-sm">
+                      <div className="flex min-w-0 items-center gap-2">
+                        <Badge
+                          className={cn(
+                            "h-6 rounded-sm px-2 text-xs font-bold",
+                            getSeverityBadgeClass(messageData.severity),
+                          )}
+                        >
+                          {messageData.severity}
+                        </Badge>
+                        <span
+                          className="block truncate"
+                          title={messageData.rule_id}
+                        >
+                          {messageData.rule_id}
+                        </span>
+                      </div>
+                    </TableCell>
+
+                    <TableCell className="px-4 py-3 text-sm">
                       <span
                         className="block truncate"
-                        title={messageData.rule_id}
+                        title={messageData.message}
                       >
-                        {messageData.rule_id}
+                        {messageData.message}
                       </span>
-                    </div>
-                  </TableCell>
+                    </TableCell>
 
-                  <TableCell className="px-4 py-3 text-sm">
-                    <span
-                      className="block truncate"
-                      title={messageData.message}
+                    <TableCell
+                      className="px-4 py-3 text-sm"
+                      onClick={(event) =>
+                        handleSourceClick(event, messageData.source)
+                      }
+                      title={messageData.source}
                     >
-                      {messageData.message}
-                    </span>
-                  </TableCell>
+                      <span className="cursor-pointer text-primary hover:underline">
+                        {messageData.file_name}
+                      </span>
+                    </TableCell>
 
-                  <TableCell
-                    className="px-4 py-3 text-sm"
-                    onClick={(event) =>
-                      handleSourceClick(event, messageData.source)
-                    }
-                    title={messageData.source}
-                  >
-                    <span className="cursor-pointer text-primary hover:underline">
-                      {messageData.file_name}
-                    </span>
-                  </TableCell>
-
-                  <TableCell className="px-4 py-3 text-center text-sm">
-                    {messageData.severity}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                    <TableCell className="px-4 py-3 text-center text-sm">
+                      {messageData.severity}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        )}
       </div>
 
-      <TablePagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
-      />
+      {messagesToShow.length > 0 && (
+        <TablePagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={setCurrentPage}
+        />
+      )}
     </div>
   );
 }
