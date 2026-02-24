@@ -26,7 +26,7 @@ import {
   filterKeywordsByType,
 } from "@/utilities/keyword_utils";
 import { vscode } from "@/utilities/vscode";
-import { TablePagination } from "@/app/shared/table-pagination";
+import { TablePagination } from "@/components/main-content/table-pagination";
 import { NoFileSelected } from "./no-file-selected";
 import { NoKeywordFound } from "./no-keywords-found";
 
@@ -56,16 +56,9 @@ function getUsageBadgeClass(totalUsages: number) {
   if (totalUsages === 0) {
     return "bg-destructive/30 text-foreground";
   }
-
-  if (totalUsages <= 10) {
-    return "bg-orange-400/30 text-foreground";
+  else {
+    return "bg-chart-1/20 text-foreground";
   }
-
-  if (totalUsages <= 30) {
-    return "bg-emerald-400/30 text-foreground";
-  }
-
-  return "bg-chart-1/20 text-foreground";
 }
 
 function isUserSource(source: string) {

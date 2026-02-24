@@ -1,7 +1,7 @@
 import { Shield, Tag } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import { CollapsibleFilterSection } from "@/app/shared/collapsible-filter-section";
-import { FilterButton } from "@/app/shared/filter-button";
+import { CollapsibleFilterSection } from "@/components/panel-section/collapsible-filter-section";
+import { FilterButton } from "@/components/sidebar/filter-button";
 import { FilterItem } from "@/types/keywords";
 
 interface SidebarRobocopProps {

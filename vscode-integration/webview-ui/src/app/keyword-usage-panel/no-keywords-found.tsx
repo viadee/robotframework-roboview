@@ -1,5 +1,5 @@
 import { SearchX } from "lucide-react";
-import { EmptyStateMessage } from "@/app/shared/empty-state-message";
+import { EmptyStateMessage } from "@/components/placeholder-messages/empty-state-message";
 
 export function NoKeywordFound() {
   return (

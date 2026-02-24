@@ -17,8 +17,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { CollapsibleFilterSection } from "@/app/shared/collapsible-filter-section";
-import { FilterButton } from "@/app/shared/filter-button";
+import { CollapsibleFilterSection } from "@/components/panel-section/collapsible-filter-section";
+import { FilterButton } from "@/components/sidebar/filter-button";
 import { FileSelect } from "@/types/files";
 import { FilterItem } from "@/types/keywords";
 

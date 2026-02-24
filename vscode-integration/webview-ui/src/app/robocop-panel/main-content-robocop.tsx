@@ -27,7 +27,7 @@ import {
   sortRobocopMessages,
 } from "@/utilities/robocop_utils";
 import { vscode } from "@/utilities/vscode";
-import { TablePagination } from "@/app/shared/table-pagination";
+import { TablePagination } from "@/components/main-content/table-pagination";
 import { NoRobocopIssuesFound } from "./no-issues-found";
 
 type SortOption =

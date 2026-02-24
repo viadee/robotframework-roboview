@@ -1,4 +1,4 @@
-import { CollapsibleFilterSection } from "@/app/shared/collapsible-filter-section";
+import { CollapsibleFilterSection } from "@/components/panel-section/collapsible-filter-section";
 import { NoRobocopIssueSelected } from "./no-issue-selected";
 import { DetailsSectionText } from "./details-section-text";
 import { RobocopMessage } from "@/types/robocop";

@@ -1,5 +1,5 @@
 import { NoKeywordSelected } from "./no-keyword-selected";
-import { CollapsibleFilterSection } from "@/app/shared/collapsible-filter-section";
+import { CollapsibleFilterSection } from "@/components/panel-section/collapsible-filter-section";
 import { FileUsage, Keyword, KeywordSimilarity } from "@/types/keywords";
 import { DetailsUsageTable } from "./details-usage-table";
 import { DetailsSimilarityTable } from "./details-similarity-table";
