@@ -124,7 +124,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 - <strong>Global Filter:</strong> Jump directly to common problem areas across the entire project:
     - <strong>Keywords without Documentation:</strong> Keywords that are missing documentation.
     - <strong>Unused Keywords:</strong> Keywords that are never called in any analyzed file.
-    - <strong>Keywords with Calling Cycles:</strong> Keywords that participate in cyclic calls (A calls B, B calls A, etc.), which can indicate design or maintainability issues.
+    - <strong>Potential Keyword Duplicates:</strong> Keywords that may duplicate or closely resemble existing keywords.
 
 <br>
 

@@ -1,7 +1,6 @@
 import logging
 from typing import Iterable
 
-import numpy as np
 import pytest
 from pygments.lexers import get_lexer_by_name
 
@@ -55,7 +54,7 @@ def test_calculate_similarity_matrix_no_user_keywords_logs_warning_and_does_noth
 
     svc.calculate_keyword_similarity_matrix()
 
-    assert svc.similarity_matrix.size == 0
+    assert svc.similarity_matrix == []
     assert svc.keyword_names_list == []
     assert any(
         "No keywords found. Similarity matrix cannot be computed." in r.getMessage()
@@ -79,10 +78,11 @@ def test_calculate_similarity_matrix_builds_matrix_and_names(monkeypatch):
 
     svc.calculate_keyword_similarity_matrix()
 
-    assert svc.similarity_matrix.shape == (2, 2)
+    assert len(svc.similarity_matrix) == 2
+    assert len(svc.similarity_matrix[0]) == 2
     assert svc.keyword_names_list == ["file.KW One", "file.KW Two"]
-    assert pytest.approx(svc.similarity_matrix[0, 0], rel=1e-5) == 1.0
-    assert pytest.approx(svc.similarity_matrix[1, 1], rel=1e-5) == 1.0
+    assert pytest.approx(svc.similarity_matrix[0][0], rel=1e-5) == 1.0
+    assert pytest.approx(svc.similarity_matrix[1][1], rel=1e-5) == 1.0
 
 
 def test_calculate_similarity_matrix_logs_and_returns_when_lexer_init_fails(monkeypatch, caplog):
@@ -105,7 +105,7 @@ def test_calculate_similarity_matrix_logs_and_returns_when_lexer_init_fails(monk
 
     svc.calculate_keyword_similarity_matrix()
 
-    assert svc.similarity_matrix.size == 0
+    assert svc.similarity_matrix == []
     assert any(
         "Failed to initialize lexer or tokenize keywords" in r.getMessage()
         for r in caplog.records
@@ -126,13 +126,13 @@ def test_calculate_similarity_matrix_logs_and_returns_when_vectorizer_fails(monk
         raising=True,
     )
 
-    class BrokenVectorizer:
-        def fit_transform(self, docs: Iterable[str]):
-            raise RuntimeError("boom")
+    def broken_build_similarity_matrix(_: Iterable[str]):
+        raise RuntimeError("boom")
 
     monkeypatch.setattr(
-        "roboview.services.keyword_similarity_service.CountVectorizer",
-        BrokenVectorizer,
+        svc,
+        "_build_similarity_matrix",
+        broken_build_similarity_matrix,
         raising=True,
     )
 
@@ -140,7 +140,7 @@ def test_calculate_similarity_matrix_logs_and_returns_when_vectorizer_fails(monk
 
     svc.calculate_keyword_similarity_matrix()
 
-    assert svc.similarity_matrix.size == 0
+    assert svc.similarity_matrix == []
     assert any(
         "Failed to create vectors or calculate similarity matrix" in r.getMessage()
         for r in caplog.records
@@ -182,7 +182,7 @@ def test_get_n_most_similar_keywords_keyword_not_in_keyword_names_list_logs_warn
     reg = FakeKeywordRegistry(kws)
     svc = KeywordSimilarityService(reg)
 
-    svc.similarity_matrix = np.array([[1.0]])
+    svc.similarity_matrix = [[1.0]]
     svc.keyword_names_list = ["some.other.Name"]
 
     caplog.set_level(logging.WARNING, logger=logger.name)
@@ -205,13 +205,11 @@ def test_get_n_most_similar_keywords_happy_path(monkeypatch):
     svc = KeywordSimilarityService(reg)
 
     svc.keyword_names_list = ["file.KW One", "file.KW Two", "file.KW Three"]
-    svc.similarity_matrix = np.array(
-        [
-            [1.0, 0.9, 0.1],
-            [0.9, 1.0, 0.2],
-            [0.1, 0.2, 1.0],
-        ]
-    )
+    svc.similarity_matrix = [
+        [1.0, 0.9, 0.1],
+        [0.9, 1.0, 0.2],
+        [0.1, 0.2, 1.0],
+    ]
 
     result = svc.get_n_most_similar_keywords("file.KW One", top_n=2)
 
@@ -234,7 +232,7 @@ def test_get_n_most_similar_keywords_handles_invalid_index_and_continues(caplog)
     svc = KeywordSimilarityService(reg)
 
     svc.keyword_names_list = ["file.KW One"]
-    svc.similarity_matrix = np.array([[1.0, 0.5], [0.5, 1.0]])
+    svc.similarity_matrix = [[1.0, 0.5], [0.5, 1.0]]
 
     caplog.set_level(logging.ERROR, logger=logger.name)
 
@@ -271,13 +269,11 @@ def test_get_all_similar_keywords_above_threshold_happy_path():
     svc = KeywordSimilarityService(reg)
 
     svc.keyword_names_list = ["file.KW One", "file.KW Two", "file.KW Three"]
-    svc.similarity_matrix = np.array(
-        [
-            [1.0, 0.85, 0.2],
-            [0.85, 1.0, 0.3],
-            [0.2, 0.3, 1.0],
-        ]
-    )
+    svc.similarity_matrix = [
+        [1.0, 0.85, 0.2],
+        [0.85, 1.0, 0.3],
+        [0.2, 0.3, 1.0],
+    ]
 
     result = svc.get_all_similar_keywords_above_threshold(threshold=0.8)
 
@@ -295,7 +291,7 @@ def test_get_all_similar_keywords_above_threshold_handles_resolve_errors(monkeyp
     svc = KeywordSimilarityService(reg)
 
     svc.keyword_names_list = ["file.KW One", "file.KW Two"]
-    svc.similarity_matrix = np.array([[1.0, 0.9], [0.9, 1.0]])
+    svc.similarity_matrix = [[1.0, 0.9], [0.9, 1.0]]
 
     def broken_resolve(name: str):
         raise RuntimeError("boom")
