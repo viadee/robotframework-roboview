@@ -3,12 +3,13 @@
 import logging
 from pathlib import Path
 
+from robot.errors import DataError
 from robot.libdocpkg import LibraryDocumentation
 from robot.parsing import get_model, get_resource_model
 from roboview.models.robot_parsing.keyword_dependency_parsing import KeywordDependencyFinder
 from roboview.models.robot_parsing.local_keyword_parsing import LocalKeywordFinder
 from roboview.registries.keyword_registry import KeywordRegistry
-from roboview.schemas.domain.common import FileType, LibraryType
+from roboview.schemas.domain.common import BuiltinLibraryType, ExternalLibraryType, FileType
 from roboview.schemas.domain.keywords import KeywordProperties
 from roboview.utils.directory_parsing import DirectoryParser
 
@@ -45,16 +46,33 @@ class KeywordRegistryService:
 
         This method:
         1. Loads local keywords from .robot and .resource files
-        2. Loads external library keywords (Browser, Selenium, Database, BuiltIn)
-        3. Populates the KeywordRegistry with all discovered keywords
+        2. Loads built-in library keywords (BuiltIn, Collections, DateTime, etc.)
+        3. Loads external library keywords (Browser, Selenium, Database, Appium, Requests) if installed
+        4. Populates the KeywordRegistry with all discovered keywords
 
         """
         try:
+            logger.info("Register user-defined keywords")
             self._load_local_keywords()
-            self._load_library_keywords()
-            logger.info("Registry initialized with %d keywords", len(self.registry))
+            logger.info("Finished registering user-defined keywords")
         except Exception:
-            logger.exception("Failed to initialize keyword registry")
+            logger.exception("Failed to register keywords with user-defined keywords")
+
+        try:
+            logger.info("Register built-in library keywords")
+            self._load_builtin_library_keywords()
+            logger.info("Finished registering built-in library keywords")
+        except Exception:
+            logger.exception("Failed to register keywords with built-in keywords")
+
+        try:
+            logger.info("Register external library keywords")
+            self._load_external_library_keywords()
+            logger.info("Finished registering external library keywords")
+        except Exception:
+            logger.exception("Failed to register keywords with external keywords")
+
+        logger.info("Registry initialized with %d keywords", len(self.registry))
 
     def _load_local_keywords(self) -> None:
         """Load local keywords from Robot Framework files."""
@@ -125,13 +143,37 @@ class KeywordRegistryService:
         keyword_doc.called_keywords = dependency_map.get(keyword_name, [])
         return keyword_doc
 
-    def _load_library_keywords(self) -> None:
+    def _load_builtin_library_keywords(self) -> None:
+        libraries = [
+            BuiltinLibraryType.BUILTIN,
+            BuiltinLibraryType.COLLECTIONS,
+            BuiltinLibraryType.DATETIME,
+            BuiltinLibraryType.DIALOGS,
+            BuiltinLibraryType.OPERATINGSYSTEM,
+            BuiltinLibraryType.PROCESS,
+            BuiltinLibraryType.SCREENSHOT,
+            BuiltinLibraryType.STRING,
+            BuiltinLibraryType.TELNET,
+            BuiltinLibraryType.XML,
+        ]
+
+        for library_type in libraries:
+            try:
+                keyword_doc = self._get_library_keywords(library_type)
+                for keyword in keyword_doc:
+                    self.registry.register(keyword)
+            except Exception:
+                logger.exception("Failed to load library: %s", library_type.value)
+                continue
+
+    def _load_external_library_keywords(self) -> None:
         """Load keywords from external Robot Framework libraries."""
         libraries = [
-            LibraryType.BROWSER,
-            LibraryType.SELENIUM,
-            LibraryType.DATABASE,
-            LibraryType.BUILTIN,
+            ExternalLibraryType.BROWSER,
+            ExternalLibraryType.SELENIUM,
+            ExternalLibraryType.APPIUM,
+            ExternalLibraryType.DATABASE,
+            ExternalLibraryType.REQUESTS,
         ]
 
         for library_type in libraries:
@@ -145,7 +187,7 @@ class KeywordRegistryService:
                 continue
 
     @staticmethod
-    def _get_library_keywords(library_type: LibraryType) -> list[KeywordProperties]:
+    def _get_library_keywords(library_type: BuiltinLibraryType | ExternalLibraryType) -> list[KeywordProperties]:
         """Get keyword metadata for a specific library.
 
         Arguments:
@@ -176,6 +218,9 @@ class KeywordRegistryService:
                         validation_str_with_prefix=str(keyword_with_prefix).lower().replace(" ", "").replace("_", ""),
                     )
                 )
+        except DataError:
+            logger.warning("Library not installed: %s will be skipped", library_type.value)
+            return []
 
         except Exception:
             logger.exception("Library %s could not be loaded", lib_name)
