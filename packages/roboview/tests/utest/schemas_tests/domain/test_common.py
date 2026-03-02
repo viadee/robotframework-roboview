@@ -1,19 +1,41 @@
 import pytest
 
-from roboview.schemas.domain.common import LibraryType, FileType, KeywordType
+from roboview.schemas.domain.common import BuiltinLibraryType, ExternalLibraryType, FileType, KeywordType
 
 
-def test_library_type_values_and_members():
-    assert LibraryType.BROWSER.value == "Browser"
-    assert LibraryType.SELENIUM.value == "SeleniumLibrary"
-    assert LibraryType.BUILTIN.value == "BuiltIn"
-    assert LibraryType.DATABASE.value == "DatabaseLibrary"
+def test_external_library_type_values_and_members():
+    assert ExternalLibraryType.BROWSER.value == "Browser"
+    assert ExternalLibraryType.SELENIUM.value == "SeleniumLibrary"
+    assert ExternalLibraryType.DATABASE.value == "DatabaseLibrary"
+    assert ExternalLibraryType.APPIUM.value == "AppiumLibrary"
+    assert ExternalLibraryType.REQUESTS.value == "RequestsLibrary"
 
-    assert set(LibraryType.__members__.keys()) == {
+    assert set(ExternalLibraryType.__members__.keys()) == {
         "BROWSER",
         "SELENIUM",
-        "BUILTIN",
         "DATABASE",
+        "APPIUM",
+        "REQUESTS",
+    }
+
+
+def test_builtin_library_type_values_and_members():
+    assert BuiltinLibraryType.BUILTIN.value == "BuiltIn"
+    assert BuiltinLibraryType.COLLECTIONS.value == "Collections"
+    assert BuiltinLibraryType.DATETIME.value == "DateTime"
+    assert BuiltinLibraryType.OPERATINGSYSTEM.value == "OperatingSystem"
+
+    assert set(BuiltinLibraryType.__members__.keys()) == {
+        "BUILTIN",
+        "COLLECTIONS",
+        "DATETIME",
+        "DIALOGS",
+        "OPERATINGSYSTEM",
+        "PROCESS",
+        "SCREENSHOT",
+        "STRING",
+        "TELNET",
+        "XML",
     }
 
 
@@ -37,11 +59,15 @@ def test_keyword_type_values_and_members():
     }
 
 
-def test_library_type_from_value_roundtrip():
-    assert LibraryType("Browser") is LibraryType.BROWSER
-    assert LibraryType("SeleniumLibrary") is LibraryType.SELENIUM
-    assert LibraryType("BuiltIn") is LibraryType.BUILTIN
-    assert LibraryType("DatabaseLibrary") is LibraryType.DATABASE
+def test_external_library_type_from_value_roundtrip():
+    assert ExternalLibraryType("Browser") is ExternalLibraryType.BROWSER
+    assert ExternalLibraryType("SeleniumLibrary") is ExternalLibraryType.SELENIUM
+    assert ExternalLibraryType("DatabaseLibrary") is ExternalLibraryType.DATABASE
+
+
+def test_builtin_library_type_from_value_roundtrip():
+    assert BuiltinLibraryType("BuiltIn") is BuiltinLibraryType.BUILTIN
+    assert BuiltinLibraryType("Collections") is BuiltinLibraryType.COLLECTIONS
 
 
 def test_file_type_from_value_roundtrip():
@@ -54,9 +80,14 @@ def test_keyword_type_from_value_roundtrip():
     assert KeywordType("called") is KeywordType.CALLED
 
 
-def test_invalid_library_type_raises_value_error():
+def test_invalid_external_library_type_raises_value_error():
     with pytest.raises(ValueError):
-        LibraryType("UnknownLib")
+        ExternalLibraryType("UnknownLib")
+
+
+def test_invalid_builtin_library_type_raises_value_error():
+    with pytest.raises(ValueError):
+        BuiltinLibraryType("UnknownLib")
 
 
 def test_invalid_file_type_raises_value_error():
