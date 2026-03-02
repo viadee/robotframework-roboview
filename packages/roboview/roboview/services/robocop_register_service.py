@@ -7,8 +7,10 @@ from contextlib import redirect_stderr, redirect_stdout
 from pathlib import Path
 
 import click
-from robocop.config import Config, ConfigManager
+from robocop.config.manager import ConfigManager
+from robocop.linter.fix import FixApplier
 from robocop.linter.runner import RobocopLinter
+from robocop.source_file import SourceFile
 from roboview.registries.robocop_registry import RobocopRegistry
 from roboview.schemas.domain.robocop import RobocopMessage, RuleCategory
 from roboview.utils.directory_parsing import DirectoryParser
@@ -73,7 +75,7 @@ class RobocopRegistryService:
             diagnostics = linter.diagnostics
             if diagnostics:
                 for error in diagnostics:
-                    rf_script_path = Path(error.source)
+                    rf_script_path = Path(error.source.path)
                     self.robocop_registry.register(
                         RobocopMessage(
                             rule_id=self._extract_rule_id(str(error.rule)),
@@ -105,11 +107,12 @@ class RobocopRegistryService:
         files = robot_files + resources_files
 
         try:
-            config = Config(silent=True)
+            config = ConfigManager().default_config
             linter = RobocopLinter(ConfigManager())
 
             for file in files:
-                diagnostics = linter.get_model_diagnostics(config, file)
+                source_file = SourceFile(path=file, config=config)
+                diagnostics = linter.get_model_diagnostics(source_file, FixApplier())
 
                 if diagnostics:
                     for error in diagnostics:
