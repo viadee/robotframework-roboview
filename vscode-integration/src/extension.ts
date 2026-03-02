@@ -7,7 +7,7 @@ import { RoboViewControlProvider } from "./views";
 import { LifecycleManager } from "./services/lifecycleManager";
 
 export let currentPanel: vscode.WebviewPanel | undefined;
-export const API_BASE_URL: string = "http://127.0.0.1:8000";
+export const API_BASE_URL: string = "http://127.0.0.1:18123";
 
 let backendConnectionManager: BackendConnectionManager =
   new BackendConnectionManager(API_BASE_URL);
