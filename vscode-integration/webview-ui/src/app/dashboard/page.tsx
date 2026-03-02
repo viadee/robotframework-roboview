@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { vscode } from "../../utilities/vscode";
-import { useMessageListener } from "../../hooks/useMessageListener";
-import MetricsGrid from "../../components/dashboard/metric-grid";
-import KeywordAnalysis from "../../components/dashboard/keyword-analysis";
-import RobocopIssuesSummary from "../../components/dashboard/robocop-issue-summary";
-import ProjectInfo from "../../components/dashboard/project-info";
-import { KPIData, IssueSummary, MostUsedKeywords } from "../../types/dashboard";
+import { useEffect, useState } from "react";
+import { useMessageListener } from "@/hooks/useMessageListener";
+import { KPIData, IssueSummary, MostUsedKeywords } from "@/types/dashboard";
+import ProjectInfoCard from "./project-info-card";
+import MetricsGrid from "./metrics-grid";
+import KeywordAnalysis from "./keyword-analysis";
+import RobocopIssuesSummary from "./robocop-issues";
+import { vscode } from "@/utilities/vscode";
+import { CollapsibleSection } from "./collapsible-section";
+import { FolderOpen, ShieldAlert, BarChart2, Activity } from "lucide-react";
 
-export default function DashboardView() {
+export default function DashboardPage() {
   const [projectPath, setProjectPath] = useState<string>("");
   const [kpiData, setKpiData] = useState<KPIData | null>(null);
   const [mostUsedKeywords, setMostUsedKeywords] =
@@ -40,27 +42,43 @@ export default function DashboardView() {
   }, []);
 
   return (
-    <div className="dashboard-view">
-      <div className="dashboard-content">
-        <h2 className="section-title">Selected Project</h2>
-        <ProjectInfo projectPath={projectPath} />
+    <div className="mx-auto flex h-full w-full max-w-8xl flex-col gap-6 overflow-y-auto p-6">
+      <CollapsibleSection
+        title="Selected Project"
+        icon={FolderOpen}
+        iconColor="text-amber-400"
+      >
+        <ProjectInfoCard projectPath={projectPath} />
+      </CollapsibleSection>
 
-        <h2 className="section-title">KPIs</h2>
-        {kpiData && <MetricsGrid kpiData={kpiData} />}
+      <CollapsibleSection
+        title="KPIs"
+        icon={Activity}
+        iconColor="text-blue-400"
+      >
+        <MetricsGrid kpiData={kpiData} />
+      </CollapsibleSection>
 
-        <h2 className="section-title">Keyword Analysis</h2>
-        {mostUsedKeywords && (
-          <KeywordAnalysis
-            mostUsedUserKeywords={mostUsedKeywords.most_used_user_keywords}
-            mostUsedExternalKeywords={
-              mostUsedKeywords.most_used_external_keywords
-            }
-          />
-        )}
+      <CollapsibleSection
+        title="Keyword Analysis"
+        icon={BarChart2}
+        iconColor="text-amber-400"
+      >
+        <KeywordAnalysis
+          mostUsedUserKeywords={mostUsedKeywords?.most_used_user_keywords ?? []}
+          mostUsedExternalKeywords={
+            mostUsedKeywords?.most_used_external_keywords ?? []
+          }
+        />
+      </CollapsibleSection>
 
-        <h2 className="section-title">Robocop Issues Summary</h2>
+      <CollapsibleSection
+        title="Robocop Issues Summary"
+        icon={ShieldAlert}
+        iconColor="text-red-400"
+      >
         <RobocopIssuesSummary issues={issueSummary} />
-      </div>
+      </CollapsibleSection>
     </div>
   );
 }

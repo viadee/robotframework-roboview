@@ -44,7 +44,7 @@ class FakeDiagnostic:
         self.message = message
         self.severity = severity
         self.range = range_obj
-        self.source = source
+        self.source = type("FakeSource", (), {"path": source})()
 
 
 class FakeConfigManager:

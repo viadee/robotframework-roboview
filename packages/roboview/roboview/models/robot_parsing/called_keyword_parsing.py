@@ -8,6 +8,8 @@ from robot.api.parsing import (
 from robot.parsing.model.statements import (
     KeywordCall,
     Setup,
+    SuiteSetup,
+    SuiteTeardown,
     Teardown,
     TestSetup,
     TestTeardown,
@@ -50,6 +52,24 @@ class CalledKeywordFinder(ModelVisitor):
 
         """
         self._add_keyword(node.keyword)
+
+    def visit_SuiteSetup(self, node: SuiteSetup) -> None:  # noqa: N802
+        """Visit a SuiteSetup node and extract the keyword.
+
+        Arguments:
+            node (SuiteSetup): SuiteSetup node in the AST.
+
+        """
+        self._add_keyword(node.name)
+
+    def visit_SuiteTeardown(self, node: SuiteTeardown) -> None:  # noqa: N802
+        """Visit a SuiteTeardown node and extract the keyword.
+
+        Arguments:
+            node (SuiteTeardown): SuiteTeardown node in the AST.
+
+        """
+        self._add_keyword(node.name)
 
     def visit_Setup(self, node: Setup) -> None:  # noqa: N802
         """Visit a Setup node and extract the keyword.

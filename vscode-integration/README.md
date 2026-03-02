@@ -1,5 +1,5 @@
 # RoboView - Keyword Management in Robot Framework
-![banner](./static/github_banner.png)
+![banner](https://raw.githubusercontent.com/viadee/robotframework-roboview/main/static/github_banner.png)
 [![PyPI version](https://img.shields.io/pypi/v/robotframework-roboview.svg)](https://pypi.org/project/robotframework-roboview/)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
 ![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
@@ -73,10 +73,10 @@ The **Dashboard** gives you a high‑level overview of the selected Robot Framew
 
 
 <p align="center">
-  <img src="./static/dashboard_1.png" alt="keyword_list" width="900"/>
+  <img src="https://raw.githubusercontent.com/viadee/robotframework-roboview/main/static/dashboard_1.png" alt="keyword_list" width="900"/>
 </p>
 <p align="center">
-  <img src="./static/dashboard_2.png" alt="keyword_list" width="900"/>
+  <img src="https://raw.githubusercontent.com/viadee/robotframework-roboview/main/static/dashboard_2.png" alt="keyword_list" width="900"/>
 </p>
 
 <br>
@@ -108,7 +108,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 </p>
 
 <p align="center">
-  <img src="./static/keyword_usage.png" alt="graph_view" width="900"/>
+  <img src="https://raw.githubusercontent.com/viadee/robotframework-roboview/main/static/keyword_usage.png" alt="graph_view" width="900"/>
 </p>
 
 <br>
@@ -124,7 +124,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 - <strong>Global Filter:</strong> Jump directly to common problem areas across the entire project:
     - <strong>Keywords without Documentation:</strong> Keywords that are missing documentation.
     - <strong>Unused Keywords:</strong> Keywords that are never called in any analyzed file.
-    - <strong>Keywords with Calling Cycles:</strong> Keywords that participate in cyclic calls (A calls B, B calls A, etc.), which can indicate design or maintainability issues.
+    - <strong>Potential Keyword Duplicates:</strong> Keywords that may duplicate or closely resemble existing keywords.
 
 <br>
 
@@ -165,7 +165,7 @@ The **Robocop** view integrates the `https://robocop.readthedocs.io/` linter dir
 
 
 <p align="center">
-  <img src="./static/robocop.png" alt="robocop_issues" width="900"/>
+  <img src="https://raw.githubusercontent.com/viadee/robotframework-roboview/main/static/robocop.png" alt="robocop_issues" width="900"/>
 </p>
 
 

@@ -5,7 +5,7 @@ from roboview.services.keyword_register_service import (
     KeywordRegistryService,
     logger,
 )
-from roboview.schemas.domain.common import FileType, LibraryType
+from roboview.schemas.domain.common import BuiltinLibraryType, ExternalLibraryType, FileType
 from roboview.schemas.domain.keywords import KeywordProperties
 
 
@@ -143,7 +143,7 @@ def test_initialize_loads_local_and_library_keywords(tmp_path, monkeypatch):
         raising=True,
     )
 
-    def fake_get_library_keywords(library_type: LibraryType) -> list[KeywordProperties]:
+    def fake_get_library_keywords(library_type: BuiltinLibraryType | ExternalLibraryType) -> list[KeywordProperties]:
         base = library_type.value
         return [
             KeywordProperties(
@@ -179,7 +179,7 @@ def test_initialize_loads_local_and_library_keywords(tmp_path, monkeypatch):
     svc.initialize()
 
     all_keywords = svc.get_keyword_info_list()
-    assert len(all_keywords) == 12
+    assert len(all_keywords) == 34
 
     local = [
         k
@@ -207,7 +207,7 @@ def test_initialize_logs_error_if_any_step_fails(tmp_path, monkeypatch, caplog):
     svc.initialize()
 
     assert any(
-        "Failed to initialize keyword registry" in record.getMessage()
+        "Failed to register keywords with user-defined keywords" in record.getMessage()
         for record in caplog.records
     )
 
@@ -345,11 +345,15 @@ def test__enrich_with_called_keywords_defaults_to_empty_list_for_missing_key():
     assert enriched.called_keywords == []
 
 
-def test__load_library_keywords_registers_keywords_and_logs_on_failure(tmp_path, monkeypatch, caplog):
+def test__load_builtin_and_external_library_keywords_registers_keywords_and_logs_on_failure(
+    tmp_path,
+    monkeypatch,
+    caplog,
+):
     svc = KeywordRegistryService(tmp_path)
 
-    def fake_get_library_keywords(library_type: LibraryType) -> list[KeywordProperties]:
-        if library_type is LibraryType.BROWSER:
+    def fake_get_library_keywords(library_type: BuiltinLibraryType | ExternalLibraryType) -> list[KeywordProperties]:
+        if library_type is ExternalLibraryType.BROWSER:
             return [
                 KeywordProperties(
                     file_name="Browser",
@@ -373,13 +377,29 @@ def test__load_library_keywords_registers_keywords_and_logs_on_failure(tmp_path,
 
     caplog.set_level(logging.ERROR, logger=logger.name)
 
-    svc._load_library_keywords()
+    svc._load_builtin_library_keywords()
+    svc._load_external_library_keywords()
 
     all_kws = svc.get_keyword_info_list()
     assert len(all_kws) == 1
     assert all_kws[0].keyword_name_without_prefix == "Open Browser"
 
-    for lib in (LibraryType.SELENIUM, LibraryType.DATABASE, LibraryType.BUILTIN):
+    for lib in (
+        BuiltinLibraryType.BUILTIN,
+        BuiltinLibraryType.COLLECTIONS,
+        BuiltinLibraryType.DATETIME,
+        BuiltinLibraryType.DIALOGS,
+        BuiltinLibraryType.OPERATINGSYSTEM,
+        BuiltinLibraryType.PROCESS,
+        BuiltinLibraryType.SCREENSHOT,
+        BuiltinLibraryType.STRING,
+        BuiltinLibraryType.TELNET,
+        BuiltinLibraryType.XML,
+        ExternalLibraryType.SELENIUM,
+        ExternalLibraryType.DATABASE,
+        ExternalLibraryType.APPIUM,
+        ExternalLibraryType.REQUESTS,
+    ):
         assert any(
             f"Failed to load library: {lib.value}" in record.getMessage()
             for record in caplog.records
@@ -399,7 +419,7 @@ def test__get_library_keywords_happy_path(monkeypatch):
         raising=True,
     )
 
-    kws = KeywordRegistryService._get_library_keywords(LibraryType.BROWSER)
+    kws = KeywordRegistryService._get_library_keywords(ExternalLibraryType.BROWSER)
 
     assert len(kws) == 2
     names = {k.keyword_name_without_prefix for k in kws}
@@ -423,7 +443,7 @@ def test__get_library_keywords_returns_empty_list_on_exception(monkeypatch, capl
 
     caplog.set_level(logging.ERROR, logger=logger.name)
 
-    kws = KeywordRegistryService._get_library_keywords(LibraryType.BROWSER)
+    kws = KeywordRegistryService._get_library_keywords(ExternalLibraryType.BROWSER)
 
     assert kws == []
     assert any(
