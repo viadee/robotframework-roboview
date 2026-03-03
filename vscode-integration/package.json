@@ -9,7 +9,7 @@
   "displayName": "RoboView",
   "description": "RoboView is a tool designed to support Robot Framework users in managing keywords and refactoring their codebase.",
   "icon": "resources/icon.png",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.93.0"
   },
@@ -85,24 +85,22 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
-    "dotenv": "^16.5.0"
+    "dotenv": "^17.3.1"
   },
   "devDependencies": {
-    "@types/axios": "^0.9.36",
-    "@types/dotenv": "^6.1.1",
-    "@types/mocha": "^10.0.9",
-    "@types/node": "20.x",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "25.x",
     "@types/vscode": "^1.93.0",
-    "@typescript-eslint/eslint-plugin": "^8.10.0",
-    "@typescript-eslint/parser": "^8.7.0",
-    "@vscode/test-cli": "^0.0.10",
-    "@vscode/test-electron": "^2.4.1",
-    "@vscode/vsce": "^3.3.2",
-    "esbuild": "^0.25.4",
-    "eslint": "^9.13.0",
+    "@typescript-eslint/eslint-plugin": "^8.56.1",
+    "@typescript-eslint/parser": "^8.56.1",
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
+    "esbuild": "^0.27.3",
+    "eslint": "^10.0.2",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.5",
     "prettier": "^3.8.1",
-    "typescript": "^5.6.3"
+    "typescript": "^5.9.3"
   }
 }
