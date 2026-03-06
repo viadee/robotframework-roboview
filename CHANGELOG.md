@@ -5,7 +5,6 @@ All notable changes to the "roboview" extension will be documented in this file.
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
 ## [Unreleased]
-
 - Initial release
 
 ## [0.0.3] - 2026-03-02
@@ -24,3 +23,9 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - Refactored keyword similarity without numpy and scikit-learn (backend size is now just around 20 MB instead of 300MB before)
   - Added support for additional libraries including all BuiltIn libraries (Collections, DateTime etc.), Appium and Requests
   - Migrated to Robocop v8.2.2 (code changes were necessary)
+
+## [0.0.4] - 2026-03-05
+### Added
+- Fixed Python Versioning >3.14
+- Checks whether roboview is installed and if the correct version is installed
+- Raises a vscode message if the package needs to be installed/updated, the startup process is abandoned then
