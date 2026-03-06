@@ -2,7 +2,7 @@
 ![banner](./static/github_banner.png)
 [![PyPI version](https://img.shields.io/pypi/v/robotframework-roboview.svg)](https://pypi.org/project/robotframework-roboview/)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
-![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
+![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 
 
 RoboView is a Visual Studio Code extension designed to help you manage keywords within your Robot Framework projects and improve overall test quality through built-in Robocop integration. Its primary goal is to provide a comprehensive overview of all keywords and their relationships, making it easier to understand and maintain your test automation codebase.
