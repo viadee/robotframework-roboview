@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as vscode from "vscode";
-import { spawn, spawnSync, ChildProcess } from "child_process";
+import { spawn, ChildProcess } from "child_process";
 
 import { PathManager } from "./pathManager";
 import { RobocopConfigFinder } from "./robocopConfigManager";
@@ -11,7 +11,7 @@ export class BackendConnectionManager {
   private serverProcess: ChildProcess | null;
 
   constructor(
-    apiServerUrl: string = "http://127.0.0.1:8000",
+    apiServerUrl: string = "http://127.0.0.1:18123",
     OutputChannelName: string = "RoboView Server",
     serverProcess: ChildProcess | null = null,
   ) {
@@ -55,7 +55,6 @@ export class BackendConnectionManager {
     }
 
     try {
-      this.serverOutputChannel.appendLine("Starting Backend...");
       this.serverOutputChannel.appendLine(
         `Python Path: ${pythonInterpreterPath}`,
       );
