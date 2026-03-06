@@ -45,6 +45,21 @@ export class LifecycleManager {
           !(await this.backendConnectionManager.isServerRunning())
         ) {
           try {
+            progress.report({
+              increment: 10,
+              message:
+                "Checking robotframework-roboview package installation...",
+            });
+            const backendReady =
+              await PythonEnvironmentManager.validateBackendPackageForStartup(
+                pythonInterpreterPath,
+                this.backendConnectionManager.getServerOutputChannel(),
+              );
+
+            if (!backendReady) {
+              return;
+            }
+
             progress.report({ increment: 20, message: "Starting server..." });
             const serverStarted =
               await this.backendConnectionManager.startServer(
