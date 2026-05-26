@@ -6,6 +6,8 @@ import {
   Uri,
   ViewColumn,
   Range,
+  TextEditorRevealType,
+  Position,
 } from "vscode";
 import axios from "axios";
 import { getUri } from "./utils/getUri";
@@ -170,12 +172,16 @@ export class RoboViewPanel {
 
               if (filePath) {
                 const fileUri = Uri.file(filePath);
-                window.showTextDocument(fileUri, {
+                const position = new Position(line - 1, 0);
+                const range = new Range(position, position);
+
+                const editor = await window.showTextDocument(fileUri, {
                   preview: false,
                   viewColumn: ViewColumn.Active,
-                  selection:
-                    line > 1 ? new Range(line - 1, 0, line - 1, 0) : undefined,
+                  selection: range,
                 });
+
+                editor.revealRange(range, TextEditorRevealType.InCenter);
               }
               break;
             }
