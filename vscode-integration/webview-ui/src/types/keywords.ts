@@ -17,6 +17,7 @@ export interface Keyword {
   source: string;
   file_usages: number;
   total_usages: number;
+  line_number: number;
 }
 
 export interface KeywordCounts {

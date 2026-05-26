@@ -72,6 +72,7 @@ class KeywordUsageService:
                                     kw, file_path.as_posix()
                                 ),
                                 total_usages=self._get_global_keyword_usage_for_target_keyword(kw),
+                                line_number=keyword.line_number,
                             )
                         )
                 except Exception:
@@ -164,6 +165,7 @@ class KeywordUsageService:
                                 total_usages=self._get_global_keyword_usage_for_target_keyword(
                                     entry.keyword_name_with_prefix
                                 ),
+                                line_number=entry.line_number,
                             )
                         )
                     except Exception:
@@ -198,6 +200,7 @@ class KeywordUsageService:
                                 source=entry.source,
                                 file_usages=total_usages,
                                 total_usages=total_usages,
+                                line_number=entry.line_number,
                             )
                         )
                 except Exception:
@@ -241,6 +244,7 @@ class KeywordUsageService:
                             total_usages=self._get_global_keyword_usage_for_target_keyword(
                                 entry.keyword_name_with_prefix
                             ),
+                            line_number=entry.line_number,
                         )
                     )
                 except Exception:
@@ -334,6 +338,7 @@ class KeywordUsageService:
                             total_usages=self._get_global_keyword_usage_for_target_keyword(
                                 entry.keyword_name_with_prefix
                             ),
+                            line_number=entry.line_number,
                         )
                     )
                 except Exception:
@@ -375,6 +380,7 @@ class KeywordUsageService:
                             total_usages=self._get_global_keyword_usage_for_target_keyword(
                                 entry.keyword_name_with_prefix
                             ),
+                            line_number=entry.line_number,
                         )
                     )
                 except Exception:
