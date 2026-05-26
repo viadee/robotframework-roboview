@@ -64,7 +64,7 @@ class LocalKeywordFinder(ModelVisitor):
                     source=self.file_path.as_posix(),
                     validation_str_without_prefix=node.name.lower().replace(" ", "").replace("_", ""),
                     validation_str_with_prefix=keyword_name_with_prefix.lower().replace(" ", "").replace("_", ""),
-                    line_number=node.lineno
+                    line_number=node.lineno,
                 )
             )
         except AttributeError:
