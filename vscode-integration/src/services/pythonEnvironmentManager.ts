@@ -3,7 +3,7 @@ import { spawnSync } from "child_process";
 
 export class PythonEnvironmentManager {
   private static readonly PACKAGE_NAME = "robotframework-roboview";
-  private static readonly REFERENCE_VERSION = "0.0.4";
+  private static readonly REFERENCE_VERSION = "1.0.0";
 
   public static async checkPythonEnvironment(): Promise<string> {
     const pythonExt = vscode.extensions.getExtension("ms-python.python");

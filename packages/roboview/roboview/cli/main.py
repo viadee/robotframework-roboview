@@ -28,7 +28,7 @@ _KB = 1024
 @app.command()
 def version() -> None:
     """Show RoboView version."""
-    typer.echo("RoboView v0.0.4")
+    typer.echo("RoboView v1.0.0")
 
 
 @app.command()

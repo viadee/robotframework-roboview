@@ -29,7 +29,7 @@ class ReportMetadata(BaseModel):
         description="Date and time of analysis",
         default_factory=lambda: datetime.now(UTC),
     )
-    roboview_version: str = Field(description="Version of RoboView used", default="0.0.4")
+    roboview_version: str = Field(description="Version of RoboView used", default="1.0.0")
     report_version: str = Field(description="Report format version", default="1.0")
     author: str | None = Field(description="Author of the report", default=None)
     description: str | None = Field(description="Report description", default=None)

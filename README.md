@@ -27,6 +27,16 @@ RoboView is a Visual Studio Code extension designed to help you manage keywords 
 
 RoboView consists of two parts: a **backend** (Python package) and a **frontend** (Visual Studio Code extension).
 
+### ⚠️ Prerequisites
+
+**Robot Framework** must be installed in your Python environment before installing RoboView. RoboView does **not** install Robot Framework automatically to avoid overwriting existing installations in regulated or managed environments.
+
+**Supported Robot Framework versions:** `>=7.0,<8.0`
+
+```bash
+pip install robotframework
+```
+
 ### ✅ Backend
 
 Install the backend via **pip**:
@@ -196,6 +206,62 @@ The **Robocop** view integrates the `https://robocop.readthedocs.io/` linter dir
     - Additional context that helps you understand why this issue was reported
 
 <br>
+
+---
+<h2 style="border-bottom: none; margin-bottom: 1em;">📊 CLI Report Generation</h2>
+
+RoboView includes a command-line interface (CLI) for generating comprehensive HTML reports outside of VS Code. This is ideal for **CI/CD pipelines**, **scheduled quality checks**, or **sharing project insights** with stakeholders.
+
+### Quick Start
+
+```bash
+# Analyze current directory and generate a report
+roboview analyze --project .
+
+# Specify output file and author
+roboview analyze --project ./my-rf-project --output qa-report.html --author "QA Team"
+```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `roboview analyze` | Analyze project and generate HTML report (recommended) |
+| `roboview report generate` | Alternative command for report generation |
+| `roboview serve` | Start the RoboView backend server |
+| `roboview version` | Show RoboView version |
+
+### Options for `roboview analyze`
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|--------|
+| `--project` | `-p` | Project root directory to analyze | Current directory |
+| `--output` | `-o` | Output HTML report file path | `roboview-report.html` |
+| `--author` | `-a` | Author name for the report | None |
+| `--robocop-config` | | Path to Robocop configuration file | Auto-detected |
+| `--quiet` | `-q` | Suppress output except errors (for CI/CD) | `false` |
+
+### Report Contents
+
+The generated HTML report includes:
+
+- **Executive Overview** – Risk level and overall project health status
+- **Key Performance Indicators** – Total keywords, reuse rate, documentation coverage
+- **Best Practices Score** – A 0-100 score based on quality metrics
+- **Keyword Analysis** – Most used, unused, undocumented, and potential duplicate keywords
+- **File Analysis** – Breakdown of `.robot` and `.resource` files
+- **Code Quality Issues** – Robocop findings grouped by severity and category
+
+### Example: CI/CD Integration
+
+```bash
+# Generate report in quiet mode for pipelines
+roboview analyze \
+    --project ./rf-tests \
+    --output ./reports/quality-report.html \
+    --author "CI Pipeline" \
+    --quiet
+```
 
 ---
 

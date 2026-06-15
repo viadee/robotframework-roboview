@@ -136,7 +136,7 @@ def generate(
 @app.command()
 def version() -> None:
     """Show version information."""
-    typer.echo("RoboView Reporting CLI v0.0.4")
+    typer.echo("RoboView Reporting CLI v1.0.0")
 
 
 if __name__ == "__main__":
