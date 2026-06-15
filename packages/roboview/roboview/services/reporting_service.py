@@ -261,7 +261,7 @@ class ReportingService:
                     file_path=issue.source,
                     line_number=None,  # RobocopMessage doesn't track line numbers separately
                     severity=issue.severity,
-                    category=issue.category or "Unknown",
+                    category=str(issue.category) if issue.category else "Unknown",
                     message=issue.message,
                 )
                 for issue in robocop_issues
@@ -273,7 +273,7 @@ class ReportingService:
             file_issue_count: dict[str, int] = {}
 
             for issue in robocop_issues:
-                category = issue.category or "Unknown"
+                category = str(issue.category) if issue.category else "Unknown"
                 severity = issue.severity or "INFO"
                 by_category[category] = by_category.get(category, 0) + 1
                 by_severity[severity] = by_severity.get(severity, 0) + 1
@@ -345,7 +345,8 @@ class ReportingService:
                 for similar_kw in similar_list:
                     if similar_kw.score >= _SIMILARITY_SCORE_THRESHOLD:
                         # Avoid duplicate pairs
-                        pair_key = tuple(sorted([kw_name, similar_kw.keyword_name_without_prefix]))
+                        sorted_names = sorted([kw_name, similar_kw.keyword_name_without_prefix])
+                        pair_key: tuple[str, str] = (sorted_names[0], sorted_names[1])
                         if pair_key not in seen_pairs:
                             seen_pairs.add(pair_key)
                             duplicates.append(
