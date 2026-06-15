@@ -21,6 +21,7 @@ class KeywordProperties(BaseModel):
     called_keywords: list[str] | None = Field(
         description="List of keywords that are called by the actual Keyword", default=[]
     )
+    line_number: int | None = Field(description="Line number where the keyword is defined", default=None)
 
 
 class KeywordUsage(BaseModel):
@@ -34,6 +35,7 @@ class KeywordUsage(BaseModel):
     source: str = Field(description="Path of the file, where the keyword is defined as POSIX")
     file_usages: int = Field(description="Usage of the keyword, in the selected file")
     total_usages: int = Field(description="Total usage of the keyword across the whole project")
+    line_number: int | None = Field(description="Line number where the keyword is defined", default=None)
 
 
 class SimilarKeyword(BaseModel):

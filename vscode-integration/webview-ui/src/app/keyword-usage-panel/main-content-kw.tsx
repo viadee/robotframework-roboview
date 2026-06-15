@@ -177,12 +177,12 @@ export function MainContentKeywordUsage({
     pageStartIndex + PAGE_SIZE,
   );
 
-  const handleSourceClick = (event: React.MouseEvent, filePath: string) => {
-    if (event.ctrlKey || event.metaKey) {
-      event.stopPropagation();
-      vscode.postMessage({ command: "openFile", filePath });
-    }
-  };
+  const handleSourceClick = (event: React.MouseEvent, filePath: string, lineNumber: number) => {
+  if (event.ctrlKey || event.metaKey) {
+    event.stopPropagation();
+    vscode.postMessage({ command: "openFile", filePath, line: lineNumber });
+  }
+};
 
   if (showNoFileSelected) {
     return <NoFileSelected />;
@@ -318,7 +318,7 @@ export function MainContentKeywordUsage({
                     <TableCell
                       className="px-4 py-3 text-sm text-muted-foreground"
                       onClick={(event) =>
-                        handleSourceClick(event, keyword.source)
+                        handleSourceClick(event, keyword.source, keyword.line_number)
                       }
                       title={keyword.source}
                     >

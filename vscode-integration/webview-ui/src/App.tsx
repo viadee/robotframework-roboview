@@ -4,6 +4,7 @@ import Footer from "./components/layout/footer";
 import KeywordUsagePage from "./app/keyword-usage-panel/page";
 import RobocopPage from "./app/robocop-panel/page";
 import DashboardPage from "./app/dashboard/page";
+import ReportsPage from "./app/reports-panel/page";
 
 export function App() {
   return (
@@ -15,6 +16,7 @@ export function App() {
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/keyword-usage" element={<KeywordUsagePage />} />
           <Route path="/robocop" element={<RobocopPage />} />
+          <Route path="/reports" element={<ReportsPage />} />
         </Routes>
       </main>
       <Footer />

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "robotframework-roboview"
-version = "0.0.4"
+version = "1.0.0"
 description = "RoboView is a Visual Studio Code extension designed to help you manage keywords within your Robot Framework projects and improve overall test quality through built-in Robocop integration. Its primary goal is to provide a comprehensive overview of all keywords and their relationships, making it easier to understand and maintain your test automation codebase."
 license = "Apache 2.0"
 authors = ["viadee Unternehmensberatung AG"]
@@ -12,17 +12,20 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.15"
-robotframework = "^7.4.1"
-fastapi = "^0.135.1"
-uvicorn = "^0.41.0"
-pygments = "^2.19.2"
-pydantic = "^2.12.5"
-starlette = "^0.52.1"
-pydantic-settings = "^2.13.1"
-coloredlogs = "^15.0.1"
-robotframework-robocop = "^8.2.2"
-httpx = "^0.28.1"
-typer = "^0.24.1"
+fastapi = ">=0.115"
+uvicorn = ">=0.20"
+pygments = ">=2.0"
+pydantic = ">=2.0,<3.0"
+pydantic-settings = ">=2.0,<3.0"
+coloredlogs = ">=15.0"
+robotframework-robocop = ">=8.0,<9.0"
+httpx = ">=0.25"
+typer = ">=0.12"
+starlette = ">=0.46.0"
+jinja2 = ">=3.0"
+
+[tool.poetry.scripts]
+roboview = "roboview.cli.main:app"
 
 [tool.poetry.group.dev.dependencies]
 pyright = "^1.1.408"

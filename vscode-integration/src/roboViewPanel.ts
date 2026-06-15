@@ -6,7 +6,12 @@ import {
   Uri,
   ViewColumn,
   Range,
+  TextEditorRevealType,
+  Position,
+  workspace,
 } from "vscode";
+import * as fs from "fs";
+import * as path from "path";
 import axios from "axios";
 import { getUri } from "./utils/getUri";
 import { getNonce } from "./utils/getNonce";
@@ -170,12 +175,16 @@ export class RoboViewPanel {
 
               if (filePath) {
                 const fileUri = Uri.file(filePath);
-                window.showTextDocument(fileUri, {
+                const position = new Position(line - 1, 0);
+                const range = new Range(position, position);
+
+                const editor = await window.showTextDocument(fileUri, {
                   preview: false,
                   viewColumn: ViewColumn.Active,
-                  selection:
-                    line > 1 ? new Range(line - 1, 0, line - 1, 0) : undefined,
+                  selection: range,
                 });
+
+                editor.revealRange(range, TextEditorRevealType.InCenter);
               }
               break;
             }
@@ -379,6 +388,86 @@ export class RoboViewPanel {
               break;
             }
 
+            // ========================================
+            // Reports Commands
+            // ========================================
+            case "generateReport": {
+              const generateResponse = await this._axiosInstance.post(
+                "/api/v1/reports/generate",
+                {
+                  report_type: message.reportType,
+                  export_format: message.exportFormat,
+                  author: message.author,
+                  project_root_dir: this._currentProjectDir,
+                },
+              );
+              this._panel.webview.postMessage({
+                command: "reportGenerated",
+                status: generateResponse.data,
+              });
+              break;
+            }
+
+            case "getAvailableReports": {
+              const reportsResponse = await this._axiosInstance.get(
+                "/api/v1/reports/available-reports",
+              );
+              this._panel.webview.postMessage({
+                command: "availableReports",
+                reports: reportsResponse.data,
+              });
+              break;
+            }
+
+            case "downloadReport": {
+              const reportId: string = message.reportId;
+              const format: string = message.format ?? "html";
+
+              const extMap: Record<string, string> = {
+                json: ".json",
+                html: ".html",
+                pdf: ".pdf",
+                excel: ".xlsx",
+                markdown: ".md",
+              };
+              const ext = extMap[format] ?? ".bin";
+
+              const saveUri = await window.showSaveDialog({
+                defaultUri: Uri.file(
+                  path.join(
+                    workspace.workspaceFolders?.[0]?.uri.fsPath ?? "",
+                    `report_${reportId.slice(0, 8)}${ext}`,
+                  ),
+                ),
+                filters: {
+                  "Report files": [ext.replace(".", "")],
+                  "All files": ["*"],
+                },
+              });
+
+              if (saveUri) {
+                const downloadResponse = await this._axiosInstance.get(
+                  `/api/v1/reports/download/${reportId}`,
+                  { responseType: "arraybuffer" },
+                );
+                fs.writeFileSync(
+                  saveUri.fsPath,
+                  Buffer.from(downloadResponse.data),
+                );
+                window.showInformationMessage(
+                  `Report saved to ${saveUri.fsPath}`,
+                );
+              }
+              break;
+            }
+
+            case "deleteReport": {
+              await this._axiosInstance.delete(
+                `/api/v1/reports/${message.reportId}`,
+              );
+              break;
+            }
+
             default: {
               console.warn(`Unknown command: ${message.command}`);
               this._panel.webview.postMessage({
@@ -395,9 +484,12 @@ export class RoboViewPanel {
           window.showErrorMessage(
             `Failed to fetch data for ${message.command}: ${errorMessage}`,
           );
+          const errorCommand =
+            message.command === "generateReport" ? "reportError" : "error";
           this._panel.webview.postMessage({
-            command: "error",
+            command: errorCommand,
             originalCommand: message.command,
+            error: errorMessage,
             message: errorMessage,
           });
         }
