@@ -142,6 +142,7 @@ def analyze(  # noqa: PLR0915
             --robocop-config ./robocop.toml
 
     """
+
     def log(message: str) -> None:
         if not quiet:
             typer.echo(message)
