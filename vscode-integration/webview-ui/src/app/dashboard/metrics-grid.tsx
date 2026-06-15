@@ -10,7 +10,8 @@ import {
 import { KPIData } from "@/types/dashboard";
 
 export default function MetricsGrid({ kpiData }: { kpiData: KPIData | null }) {
-  const formatPercentage = (value: number) => `${Math.round(value * 100)}%`;
+  // Backend returns percentages (0-100), so just round them
+  const formatPercentage = (value: number) => `${Math.round(value)}%`;
 
   const metrics = [
     {

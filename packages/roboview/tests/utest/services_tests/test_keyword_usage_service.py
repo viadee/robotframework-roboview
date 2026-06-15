@@ -251,10 +251,10 @@ def test_get_keyword_reusage_rate_and_doc_coverage():
     svc = KeywordUsageService(kreg, freg)
 
     reusage = svc.get_keyword_reusage_rate()
-    assert reusage == 0.33
+    assert reusage == 33.33
 
     doc_cov = svc.get_documentation_coverage()
-    assert doc_cov == 0.67
+    assert doc_cov == 66.67
 
 
 def test_get_keyword_reusage_rate_no_user_keywords_logs_warning_and_returns_0(caplog):

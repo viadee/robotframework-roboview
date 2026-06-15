@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { LayoutDashboard, KeyRound, ShieldAlert, Bot } from "lucide-react";
+import { LayoutDashboard, KeyRound, ShieldAlert, Bot, ClipboardList } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -21,6 +21,12 @@ const navItems = [
     label: "Robocop",
     icon: ShieldAlert,
     color: "text-red-400",
+  },
+  {
+    path: "/reports",
+    label: "Reports",
+    icon: ClipboardList,
+    color: "text-green-400",
   },
 ];
 
