@@ -2,14 +2,14 @@
 ![banner](./static/github_banner.png)
 [![PyPI version](https://img.shields.io/pypi/v/robotframework-roboview.svg)](https://pypi.org/project/robotframework-roboview/)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
-![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-blue)
+![python](https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)
 
 
 RoboView is a Visual Studio Code extension designed to help you manage keywords within your Robot Framework projects and improve overall test quality through built-in Robocop integration. Its primary goal is to provide a comprehensive overview of all keywords and their relationships, making it easier to understand and maintain your test automation codebase.
 
 ---
 
-## ✨ Key Features
+<h2 style="border-bottom: none; margin-bottom: 1em;">✨ Key Features</h2>
 
 - 🗂️ **Workspace:** Automatically selects your current workspace project and generates comprehensive overviews.
 - 📈 **Dashboard:** Get key performance indicators and a general overview of your robot framework project.
@@ -23,9 +23,19 @@ RoboView is a Visual Studio Code extension designed to help you manage keywords 
 
 ---
 
-## ⚙️ Installation Guide
+<h2 style="border-bottom: none; margin-bottom: 1em;">⚙️ Installation Guide</h2>
 
 RoboView consists of two parts: a **backend** (Python package) and a **frontend** (Visual Studio Code extension).
+
+### ⚠️ Prerequisites
+
+**Robot Framework** must be installed in your Python environment before installing RoboView. RoboView does **not** install Robot Framework automatically to avoid overwriting existing installations in regulated or managed environments.
+
+**Supported Robot Framework versions:** `>=7.0,<8.0`
+
+```bash
+pip install robotframework
+```
 
 ### ✅ Backend
 
@@ -45,7 +55,7 @@ The Frontend is available as a Visual Studio Code extension on the Marketplace �
 
 ---
 
-## 🛠️ GitHub
+<h2 style="border-bottom: none; margin-bottom: 1em;">🛠️ GitHub</h2>
 
 You can find the RoboView source code and issue tracker on GitHub:
 
@@ -53,7 +63,7 @@ You can find the RoboView source code and issue tracker on GitHub:
 
 ---
 
-## 📝 Notes and Recommendations
+<h2 style="border-bottom: none; margin-bottom: 1em;">📝 Notes and Recommendations</h2>
 
 - For Robocop to automatically detect your configuration, name the file **`robocop.toml`**, **`robot.toml`** or integrate in **`pyproject.toml`**.  
   If you cannot change the filename in your project, you can instead set the environment variable **`ROBOCOP_CONFIG_PATH`** to the full path of your config file.
@@ -62,12 +72,12 @@ You can find the RoboView source code and issue tracker on GitHub:
 
 ---
 
-## 🔍 How to navigate RoboView
+<h2 style="border-bottom: none; margin-bottom: 1em;">🔍 How to navigate RoboView</h2>
 
 In the following three sections, we will dive deeper into how to navigate RoboView: where to find the features and understand the terminology we use. We start with the dashboard, then look at the keyword usage overview, and finally the Robocop integration.
 You can switch between these views using the buttons in the top-right corner of RoboView: <code>Dashboard</code>, <code>Keyword Usage</code>, and <code>Robocop</code>.
 
-## 📋 1) Dashboard
+<h3 style="border-bottom: none; margin-bottom: 1em;">📋 1) Dashboard</h3>
 
 The **Dashboard** gives you a high‑level overview of the selected Robot Framework project and its overall health.
 
@@ -98,7 +108,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 - **Robot Framework Files**: Total number of `.robot` and `.resource` files that were analyzed. Use the dashboard to quickly spot problematic areas (e.g. many unused keywords, low documentation coverage, or a high number of Robocop issues) and decide where to focus your refactoring or cleanup efforts first.
 
 
-## 🌳 2) Keyword Overview
+<h3 style="border-bottom: none; margin-bottom: 1em;">🌳 2) Keyword Overview</h3>
 
 <p align="center" style="margin-bottom: 0.5em;">
   <strong>Keyword Overview Layout</strong>
@@ -113,7 +123,7 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 
 <br>
 
-### ⬅️ Left Side – Navigation &amp; Filters
+<h4 style="border-bottom: none; margin-bottom: 0.5em;">⬅️ Left Side – Navigation &amp; Filters</h4>
 
 - <strong>File Selection:</strong> At the top, a dropdown lets you select a file. The current VS Code workspace is used as root, and all
   <code>.robot</code> and <code>.resource</code> files are available.
@@ -124,11 +134,11 @@ The **KPIs** section summarizes the most important metrics of your test suite:
 - <strong>Global Filter:</strong> Jump directly to common problem areas across the entire project:
     - <strong>Keywords without Documentation:</strong> Keywords that are missing documentation.
     - <strong>Unused Keywords:</strong> Keywords that are never called in any analyzed file.
-    - <strong>Keywords with Calling Cycles:</strong> Keywords that participate in cyclic calls (A calls B, B calls A, etc.), which can indicate design or maintainability issues.
+    - <strong>Potential Keyword Duplicates:</strong> Keywords that may duplicate or closely resemble existing keywords.
 
 <br>
 
-### 📊 Middle – Keyword List
+<h4 style="border-bottom: none; margin-bottom: 0.5em;">📊 Middle – Keyword List</h4>
 
 The middle section lists all keywords found in the selected file and shows key information about each of them:
 
@@ -141,7 +151,7 @@ The middle section lists all keywords found in the selected file and shows key i
 
 <br>
 
-### ➡️ Right Side – Keyword Details
+<h4 style="border-bottom: none; margin-bottom: 0.5em;">➡️ Right Side – Keyword Details</h4>
 
 When you select a keyword (by clicking a row in the middle table), the right panel shows detailed information:
 
@@ -198,8 +208,64 @@ The **Robocop** view integrates the `https://robocop.readthedocs.io/` linter dir
 <br>
 
 ---
+<h2 style="border-bottom: none; margin-bottom: 1em;">📊 CLI Report Generation</h2>
 
-## 🔮 Outlook
+RoboView includes a command-line interface (CLI) for generating comprehensive HTML reports outside of VS Code. This is ideal for **CI/CD pipelines**, **scheduled quality checks**, or **sharing project insights** with stakeholders.
+
+### Quick Start
+
+```bash
+# Analyze current directory and generate a report
+roboview analyze --project .
+
+# Specify output file and author
+roboview analyze --project ./my-rf-project --output qa-report.html --author "QA Team"
+```
+
+### Available Commands
+
+| Command | Description |
+|---------|-------------|
+| `roboview analyze` | Analyze project and generate HTML report (recommended) |
+| `roboview report generate` | Alternative command for report generation |
+| `roboview serve` | Start the RoboView backend server |
+| `roboview version` | Show RoboView version |
+
+### Options for `roboview analyze`
+
+| Option | Short | Description | Default |
+|--------|-------|-------------|--------|
+| `--project` | `-p` | Project root directory to analyze | Current directory |
+| `--output` | `-o` | Output HTML report file path | `roboview-report.html` |
+| `--author` | `-a` | Author name for the report | None |
+| `--robocop-config` | | Path to Robocop configuration file | Auto-detected |
+| `--quiet` | `-q` | Suppress output except errors (for CI/CD) | `false` |
+
+### Report Contents
+
+The generated HTML report includes:
+
+- **Executive Overview** – Risk level and overall project health status
+- **Key Performance Indicators** – Total keywords, reuse rate, documentation coverage
+- **Best Practices Score** – A 0-100 score based on quality metrics
+- **Keyword Analysis** – Most used, unused, undocumented, and potential duplicate keywords
+- **File Analysis** – Breakdown of `.robot` and `.resource` files
+- **Code Quality Issues** – Robocop findings grouped by severity and category
+
+### Example: CI/CD Integration
+
+```bash
+# Generate report in quiet mode for pipelines
+roboview analyze \
+    --project ./rf-tests \
+    --output ./reports/quality-report.html \
+    --author "CI Pipeline" \
+    --quiet
+```
+
+---
+
+<h2 style="border-bottom: none; margin-bottom: 1em;">🔮 Outlook</h2>
 
 RoboView is an actively evolving project. ✨  
 We’re continuously adding new features, polishing existing workflows, and exploring fresh ideas to make working with Robot Framework even more enjoyable. 💡

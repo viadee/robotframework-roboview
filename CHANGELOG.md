@@ -2,10 +2,21 @@
 
 All notable changes to the "roboview" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
-- Initial release
+## [1.0.0] - 2026-06-15
+### Added
+- Added keyword navigation to line-number in source file
+- Relaxed package versions
+- Removed robotframework as package (see README for reasoning)
+- Exclude non-workspace directories
+- Now tracks keyword-as-arguments for common built-in keywords
+- Added reporting feature for extension and via CLI (for headless environments)
+
+## [0.0.4] - 2026-03-05
+### Added
+- Fixed Python Versioning >3.14
+- Checks whether roboview is installed and if the correct version is installed
+- Raises a vscode message if the package needs to be installed/updated, the startup process is abandoned then
 
 ## [0.0.3] - 2026-03-02
 ### Added
@@ -24,8 +35,5 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - Added support for additional libraries including all BuiltIn libraries (Collections, DateTime etc.), Appium and Requests
   - Migrated to Robocop v8.2.2 (code changes were necessary)
 
-## [0.0.4] - 2026-03-05
-### Added
-- Fixed Python Versioning >3.14
-- Checks whether roboview is installed and if the correct version is installed
-- Raises a vscode message if the package needs to be installed/updated, the startup process is abandoned then
+## [Unreleased]
+- Initial release
