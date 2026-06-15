@@ -260,14 +260,19 @@ class KeywordUsageService:
             return result
 
     def get_keyword_reusage_rate(self) -> float:
-        """Return the keyword reusage rate as number between 0 and 1."""
+        """Return the keyword reusage rate as a percentage (0-100).
+
+        Returns:
+            float: Percentage of user-defined keywords with usage count > 1.
+
+        """
         try:
             keyword_props = self._get_user_defined_keywords_with_usages()
             if not keyword_props:
                 logger.warning("No user-defined keywords found for reusage rate calculation")
                 return 0.0
             num_user_defined_keywords_with_count_greater_one = sum(1 for ku in keyword_props if ku.total_usages > 1)
-            return round((num_user_defined_keywords_with_count_greater_one / len(keyword_props)), 2)
+            return round((num_user_defined_keywords_with_count_greater_one / len(keyword_props)) * 100, 2)
         except ZeroDivisionError:
             logger.warning("Division by zero in keyword reusage rate calculation")
             return 0.0
@@ -276,14 +281,19 @@ class KeywordUsageService:
             return 0.0
 
     def get_documentation_coverage(self) -> float:
-        """Return the ratio of keywords that have [Documentation] across the whole project."""
+        """Return the ratio of keywords that have [Documentation] as a percentage (0-100).
+
+        Returns:
+            float: Percentage of user-defined keywords with documentation.
+
+        """
         try:
             user_defined_keywords = self.keyword_registry.get_user_defined_keywords()
             if not user_defined_keywords:
                 logger.warning("No user-defined keywords found for documentation coverage calculation")
                 return 0.0
             keywords_without_docs = self.get_keywords_without_documentation()
-            return round(1 - (len(keywords_without_docs) / len(user_defined_keywords)), 2)
+            return round((1 - (len(keywords_without_docs) / len(user_defined_keywords))) * 100, 2)
         except ZeroDivisionError:
             logger.warning("Division by zero in documentation coverage calculation")
             return 0.0

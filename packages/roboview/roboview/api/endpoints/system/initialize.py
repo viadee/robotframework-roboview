@@ -9,6 +9,7 @@ from roboview.services.file_register_service import FileRegistryService
 from roboview.services.keyword_register_service import KeywordRegistryService
 from roboview.services.keyword_similarity_service import KeywordSimilarityService
 from roboview.services.keyword_usage_service import KeywordUsageService
+from roboview.services.reporting_service import ReportingService
 from roboview.services.robocop_register_service import RobocopRegistryService
 from roboview.services.robocop_service import RobocopService
 from starlette.requests import Request
@@ -70,6 +71,18 @@ async def post_initialize_roboview(request: Request, initialization_request: Ini
 
         logger.info("Initialize Robocop Service")
         request.app.state.robocop_service = RobocopService(request.app.state.robocop_registry)
+
+        logger.info("Initialize Reporting Service")
+        request.app.state.reporting_service = ReportingService(
+            request.app.state.keyword_registry,
+            request.app.state.file_registry,
+            request.app.state.robocop_registry,
+            request.app.state.keyword_usage_service,
+            request.app.state.keyword_similarity_service,
+            request.app.state.robocop_service,
+            Path(initialization_request.project_root_dir),
+        )
+
         logger.info("Initialization Successfull")
 
     except Exception as e:
