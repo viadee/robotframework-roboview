@@ -1,19 +1,19 @@
 """Domain report schemas for pydantic validation."""
 
-from datetime import datetime
-from enum import Enum
+from datetime import UTC, datetime
+from enum import StrEnum
 from uuid import uuid4
 
 from pydantic import BaseModel, Field
 
 
-class ReportTypeEnum(str, Enum):
+class ReportTypeEnum(StrEnum):
     """Enum for supported report types."""
 
     SUMMARY = "summary"
 
 
-class ExportFormatEnum(str, Enum):
+class ExportFormatEnum(StrEnum):
     """Enum for supported export formats."""
 
     HTML = "html"
@@ -25,7 +25,10 @@ class ReportMetadata(BaseModel):
     report_id: str = Field(description="Unique identifier for the report", default_factory=lambda: str(uuid4()))
     project_name: str = Field(description="Name of the Robot Framework project")
     project_root: str = Field(description="Root path of the project")
-    analysis_date: datetime = Field(description="Date and time of analysis", default_factory=datetime.utcnow)
+    analysis_date: datetime = Field(
+        description="Date and time of analysis",
+        default_factory=lambda: datetime.now(UTC),
+    )
     roboview_version: str = Field(description="Version of RoboView used", default="0.0.4")
     report_version: str = Field(description="Report format version", default="1.0")
     author: str | None = Field(description="Author of the report", default=None)

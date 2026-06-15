@@ -1,7 +1,6 @@
 """Service class implementing the reporting functionality."""
 
 import logging
-from datetime import datetime
 from pathlib import Path
 
 from roboview.registries.file_registry import FileRegistry
@@ -10,8 +9,8 @@ from roboview.registries.robocop_registry import RobocopRegistry
 from roboview.schemas.domain.reports import (
     DuplicateKeywordPair,
     FileReportData,
-    KPISummary,
     KeywordReportData,
+    KPISummary,
     Recommendation,
     ReportMetadata,
     ReportTypeEnum,
@@ -25,11 +24,26 @@ from roboview.utils.directory_parsing import DirectoryParser
 
 logger = logging.getLogger(__name__)
 
+# Quality threshold constants
+_DOCUMENTATION_COVERAGE_HIGH = 70
+_DOCUMENTATION_COVERAGE_LOW = 50
+_UNUSED_KEYWORDS_RATIO_THRESHOLD = 0.1
+_REUSAGE_RATE_THRESHOLD = 60
+_ISSUE_DENSITY_THRESHOLD = 0.5
+_ROBOCOP_ISSUES_THRESHOLD = 20
+_SIMILARITY_SCORE_THRESHOLD = 70
+
+# Risk level score thresholds
+_SCORE_OPTIMAL = 81
+_SCORE_LOW = 61
+_SCORE_MEDIUM = 41
+_SCORE_HIGH = 21
+
 
 class ReportingService:
     """Service class to provide reporting functionality."""
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         keyword_registry: KeywordRegistry,
         file_registry: FileRegistry,
@@ -121,7 +135,7 @@ class ReportingService:
         recommendations = []
 
         # Documentation recommendations
-        if kpi_summary.documentation_coverage < 70:
+        if kpi_summary.documentation_coverage < _DOCUMENTATION_COVERAGE_HIGH:
             keywords_without_docs = self.keyword_usage_service.get_keywords_without_documentation()
             recommendations.append(
                 Recommendation(
@@ -133,7 +147,8 @@ class ReportingService:
             )
 
         # Unused keywords recommendations
-        if kpi_summary.unused_keywords > 0 and kpi_summary.unused_keywords / kpi_summary.total_keywords > 0.1:
+        unused_ratio = kpi_summary.unused_keywords / kpi_summary.total_keywords
+        if kpi_summary.unused_keywords > 0 and unused_ratio > _UNUSED_KEYWORDS_RATIO_THRESHOLD:
             unused = self.keyword_usage_service.get_keywords_without_usages()
             recommendations.append(
                 Recommendation(
@@ -145,7 +160,7 @@ class ReportingService:
             )
 
         # Reusability recommendations
-        if kpi_summary.reusage_rate < 60:
+        if kpi_summary.reusage_rate < _REUSAGE_RATE_THRESHOLD:
             recommendations.append(
                 Recommendation(
                     priority="MEDIUM",
@@ -158,7 +173,7 @@ class ReportingService:
         # Code quality recommendations
         if kpi_summary.robocop_issues > 0:
             issue_density = kpi_summary.robocop_issues / max(1, kpi_summary.total_keywords)
-            if issue_density > 0.5:
+            if issue_density > _ISSUE_DENSITY_THRESHOLD:
                 recommendations.append(
                     Recommendation(
                         priority="HIGH",
@@ -173,16 +188,15 @@ class ReportingService:
     def _get_risk_level(self, kpi_summary: KPISummary) -> str:
         """Determine risk level based on overall score."""
         score = self._calculate_overall_score(kpi_summary)
-        if score >= 81:
+        if score >= _SCORE_OPTIMAL:
             return "OPTIMAL"
-        elif score >= 61:
+        if score >= _SCORE_LOW:
             return "LOW"
-        elif score >= 41:
+        if score >= _SCORE_MEDIUM:
             return "MEDIUM"
-        elif score >= 21:
+        if score >= _SCORE_HIGH:
             return "HIGH"
-        else:
-            return "CRITICAL"
+        return "CRITICAL"
 
     def _get_health_status(self, kpi_summary: KPISummary) -> str:
         """Generate a human-readable health status summary."""
@@ -191,18 +205,18 @@ class ReportingService:
 
         if kpi_summary.unused_keywords > 0:
             issues.append(f"{kpi_summary.unused_keywords} unused keywords")
-        if kpi_summary.documentation_coverage < 50:
+        if kpi_summary.documentation_coverage < _DOCUMENTATION_COVERAGE_LOW:
             issues.append("low documentation coverage")
-        if kpi_summary.robocop_issues > 20:
+        if kpi_summary.robocop_issues > _ROBOCOP_ISSUES_THRESHOLD:
             issues.append(f"{kpi_summary.robocop_issues} code quality issues")
 
-        if score >= 81:
+        if score >= _SCORE_OPTIMAL:
             status = "Excellent project health."
-        elif score >= 61:
+        elif score >= _SCORE_LOW:
             status = "Good project health with minor improvements needed."
-        elif score >= 41:
+        elif score >= _SCORE_MEDIUM:
             status = "Moderate project health requiring attention."
-        elif score >= 21:
+        elif score >= _SCORE_HIGH:
             status = "Poor project health with significant issues."
         else:
             status = "Critical project health requiring immediate action."
@@ -329,7 +343,7 @@ class ReportingService:
                 # Get similar keywords for this keyword
                 similar_list = self.keyword_similarity_service.get_n_most_similar_keywords(kw_name, 10)
                 for similar_kw in similar_list:
-                    if similar_kw.score >= 70:  # Only high similarity
+                    if similar_kw.score >= _SIMILARITY_SCORE_THRESHOLD:
                         # Avoid duplicate pairs
                         pair_key = tuple(sorted([kw_name, similar_kw.keyword_name_without_prefix]))
                         if pair_key not in seen_pairs:
@@ -345,18 +359,17 @@ class ReportingService:
                             )
 
             # Collect file data
-            files_data = []
-            for file_obj in self.file_registry.get_all_files():
-                files_data.append(
-                    FileReportData(
-                        file_name=file_obj.file_name,
-                        file_path=file_obj.path,
-                        is_resource=file_obj.is_resource,
-                        keywords_defined=len(file_obj.initialized_keywords or []),
-                        keywords_called=len(file_obj.called_keywords or []),
-                        total_lines=0,
-                    )
+            files_data = [
+                FileReportData(
+                    file_name=file_obj.file_name,
+                    file_path=file_obj.path,
+                    is_resource=file_obj.is_resource,
+                    keywords_defined=len(file_obj.initialized_keywords or []),
+                    keywords_called=len(file_obj.called_keywords or []),
+                    total_lines=0,
                 )
+                for file_obj in self.file_registry.get_all_files()
+            ]
 
             # Calculate best practices score from KPI metrics
             # Reliability: inverse of issue density
@@ -392,8 +405,8 @@ class ReportingService:
                 best_practices_score=best_practices_score,
             )
 
-        except Exception as e:
-            logger.exception("Error generating summary report: %s", e)
+        except Exception:
+            logger.exception("Error generating summary report")
             raise
 
     def generate_report(self, author: str | None = None) -> SummaryReport:

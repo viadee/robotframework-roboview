@@ -1,17 +1,17 @@
 """DTOs for report endpoints."""
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class ReportTypeEnum(str, Enum):
+class ReportTypeEnum(StrEnum):
     """Enum for report types."""
 
     SUMMARY = "summary"
 
 
-class ExportFormatEnum(str, Enum):
+class ExportFormatEnum(StrEnum):
     """Enum for export formats."""
 
     HTML = "html"

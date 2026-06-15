@@ -1,15 +1,28 @@
 """Main CLI entry point for RoboView."""
 
+import os
 from pathlib import Path
+from typing import Annotated
 
 import typer
 import uvicorn
 from roboview.cli.reporting import app as reporting_app
+from roboview.services.file_register_service import FileRegistryService
+from roboview.services.keyword_register_service import KeywordRegistryService
+from roboview.services.keyword_similarity_service import KeywordSimilarityService
+from roboview.services.keyword_usage_service import KeywordUsageService
+from roboview.services.reporting_service import ReportingService
+from roboview.services.robocop_register_service import RobocopRegistryService
+from roboview.services.robocop_service import RobocopService
+from roboview.utils.exporters.html_exporter import HTMLExporter
 
 app = typer.Typer(help="RoboView - Robot Framework Keyword Management Tool")
 
 # Add sub-apps
 app.add_typer(reporting_app, name="report", help="Report generation commands")
+
+# Constants
+_KB = 1024
 
 
 @app.command()
@@ -20,33 +33,26 @@ def version() -> None:
 
 @app.command()
 def serve(
-    host: str = typer.Option(
-        "127.0.0.1",
-        "--host",
-        "-h",
-        help="Host to bind the server to",
-    ),
-    port: int = typer.Option(
-        18123,
-        "--port",
-        "-p",
-        help="Port to run the server on",
-    ),
-    project_root: Path = typer.Option(
-        ".",
-        "--project",
-        help="Project root directory to analyze",
-    ),
-    robocop_config: Path | None = typer.Option(
-        None,
-        "--robocop-config",
-        help="Path to robocop configuration file",
-    ),
-    log_level: str = typer.Option(
-        "info",
-        "--log-level",
-        help="Log level (debug, info, warning, error)",
-    ),
+    host: Annotated[
+        str,
+        typer.Option("--host", "-h", help="Host to bind the server to"),
+    ] = "127.0.0.1",
+    port: Annotated[
+        int,
+        typer.Option("--port", "-p", help="Port to run the server on"),
+    ] = 18123,
+    project_root: Annotated[
+        Path,
+        typer.Option("--project", help="Project root directory to analyze"),
+    ] = Path(),
+    robocop_config: Annotated[
+        Path | None,
+        typer.Option("--robocop-config", help="Path to robocop configuration file"),
+    ] = None,
+    log_level: Annotated[
+        str,
+        typer.Option("--log-level", help="Log level (debug, info, warning, error)"),
+    ] = "info",
 ) -> None:
     """Start the RoboView backend server for headless workflows.
 
@@ -65,16 +71,15 @@ def serve(
 
         # Start with debug logging
         roboview serve --log-level debug
-    """
-    import os
 
+    """
     # Set environment variables for the server
     os.environ["PROJECT_ROOT"] = str(project_root.resolve())
     if robocop_config:
         os.environ["ROBOCOP_CONFIG"] = str(robocop_config.resolve())
     os.environ["LOG_LEVEL"] = log_level.upper()
 
-    typer.echo(f"🚀 Starting RoboView server...")
+    typer.echo("🚀 Starting RoboView server...")
     typer.echo(f"📁 Project: {project_root.resolve()}")
     typer.echo(f"🌐 URL: http://{host}:{port}")
     typer.echo(f"📋 API Docs: http://{host}:{port}/docs")
@@ -91,38 +96,30 @@ def serve(
 
 
 @app.command()
-def analyze(
-    project_root: Path = typer.Option(
-        ".",
-        "--project",
-        "-p",
-        help="Project root directory to analyze",
-    ),
-    output: Path = typer.Option(
-        "roboview-report.html",
-        "--output",
-        "-o",
-        help="Output HTML report file path",
-    ),
-    author: str | None = typer.Option(
-        None,
-        "--author",
-        "-a",
-        help="Author name for the report",
-    ),
-    robocop_config: Path | None = typer.Option(
-        None,
-        "--robocop-config",
-        help="Path to robocop configuration file",
-    ),
-    quiet: bool = typer.Option(
-        False,
-        "--quiet",
-        "-q",
-        help="Suppress output except errors",
-    ),
+def analyze(  # noqa: PLR0915
+    project_root: Annotated[
+        Path,
+        typer.Option("--project", "-p", help="Project root directory to analyze"),
+    ] = Path(),
+    output: Annotated[
+        Path,
+        typer.Option("--output", "-o", help="Output HTML report file path"),
+    ] = Path("roboview-report.html"),
+    author: Annotated[
+        str | None,
+        typer.Option("--author", "-a", help="Author name for the report"),
+    ] = None,
+    robocop_config: Annotated[
+        Path | None,
+        typer.Option("--robocop-config", help="Path to robocop configuration file"),
+    ] = None,
+    *,
+    quiet: Annotated[
+        bool,
+        typer.Option("--quiet", "-q", help="Suppress output except errors"),
+    ] = False,
 ) -> None:
-    """Analyze a Robot Framework project and generate a comprehensive HTML report.
+    r"""Analyze a Robot Framework project and generate a comprehensive HTML report.
 
     This command analyzes the project and generates a single comprehensive
     report suitable for all audiences (business analysts, developers, project owners).
@@ -138,21 +135,13 @@ def analyze(
         roboview analyze --project . --output report.html --quiet
 
         # Full options
-        roboview analyze \\
-            --project ./rf-tests \\
-            --output ./reports/analysis.html \\
-            --author "CI Pipeline" \\
+        roboview analyze \
+            --project ./rf-tests \
+            --output ./reports/analysis.html \
+            --author "CI Pipeline" \
             --robocop-config ./robocop.toml
-    """
-    from roboview.services.file_register_service import FileRegistryService
-    from roboview.services.keyword_register_service import KeywordRegistryService
-    from roboview.services.keyword_similarity_service import KeywordSimilarityService
-    from roboview.services.keyword_usage_service import KeywordUsageService
-    from roboview.services.reporting_service import ReportingService
-    from roboview.services.robocop_register_service import RobocopRegistryService
-    from roboview.services.robocop_service import RobocopService
-    from roboview.utils.exporters.html_exporter import HTMLExporter
 
+    """
     def log(message: str) -> None:
         if not quiet:
             typer.echo(message)
@@ -164,7 +153,7 @@ def analyze(
         # Validate project root
         if not project_root.exists():
             typer.echo(f"❌ Error: Project directory does not exist: {project_root}", err=True)
-            raise typer.Exit(code=1)
+            raise typer.Exit(code=1)  # noqa: TRY301
 
         # Initialize registries
         log("📊 Initializing registries...")
@@ -219,7 +208,7 @@ def analyze(
         HTMLExporter.export(report, output_path)
 
         file_size = output_path.stat().st_size
-        size_str = f"{file_size / 1024:.1f} KB" if file_size > 1024 else f"{file_size} bytes"
+        size_str = f"{file_size / _KB:.1f} KB" if file_size > _KB else f"{file_size} bytes"
 
         log("")
         log("✅ Analysis complete!")
@@ -236,14 +225,14 @@ def analyze(
         log(f"   • Documentation Coverage: {report.summary.documentation_coverage:.1f}%")
         log(f"   • Robocop Issues: {report.summary.robocop_issues}")
         log(f"   • Total Files: {report.summary.total_files}")
-        log(f"   • Quality Score: {report.quality_scores.overall_score:.1f}/100")
+        log(f"   • Best Practices Score: {report.best_practices_score:.1f}/100")
         log(f"   • Risk Level: {report.risk_level}")
 
     except typer.Exit:
         raise
-    except Exception as e:
-        typer.echo(f"❌ Error: {e}", err=True)
-        raise typer.Exit(code=1)
+    except Exception:  # noqa: BLE001
+        typer.echo("❌ Error during analysis", err=True)
+        raise typer.Exit(code=1) from None
 
 
 if __name__ == "__main__":

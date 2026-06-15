@@ -1,10 +1,10 @@
 """HTML report exporter using Jinja2."""
 
 import logging
+from datetime import UTC, datetime
 from pathlib import Path
 
 from jinja2 import Template
-
 from roboview.schemas.domain.reports import Report, SummaryReport
 
 logger = logging.getLogger(__name__)
@@ -125,11 +125,26 @@ HTML_TEMPLATE = """<!DOCTYPE html>
             margin-bottom: 30px;
         }
 
-        .health-box.OPTIMAL { background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%); border: 2px solid #22c55e; }
-        .health-box.LOW { background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border: 2px solid #3b82f6; }
-        .health-box.MEDIUM { background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border: 2px solid #f59e0b; }
-        .health-box.HIGH { background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%); border: 2px solid #f97316; }
-        .health-box.CRITICAL { background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%); border: 2px solid #ef4444; }
+        .health-box.OPTIMAL {
+            background: linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%);
+            border: 2px solid #22c55e;
+        }
+        .health-box.LOW {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border: 2px solid #3b82f6;
+        }
+        .health-box.MEDIUM {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: 2px solid #f59e0b;
+        }
+        .health-box.HIGH {
+            background: linear-gradient(135deg, #fed7aa 0%, #fdba74 100%);
+            border: 2px solid #f97316;
+        }
+        .health-box.CRITICAL {
+            background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+            border: 2px solid #ef4444;
+        }
 
         .health-indicator {
             display: flex;
@@ -535,25 +550,34 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         <div class="label">Total Keywords</div>
                         <div class="value">{{ total_keywords }}</div>
                     </div>
-                    <div class="kpi-card {% if unused_keywords > 5 %}warning{% elif unused_keywords > 10 %}danger{% endif %}">
+                    <div class="kpi-card
+                        {%- if unused_keywords > 10 %} danger
+                        {%- elif unused_keywords > 5 %} warning{% endif %}">
                         <div class="label">Unused Keywords</div>
                         <div class="value">{{ unused_keywords }}</div>
                     </div>
-                    <div class="kpi-card {% if reusage_rate >= 70 %}success{% elif reusage_rate < 40 %}warning{% endif %}">
+                    <div class="kpi-card
+                        {%- if reusage_rate >= 70 %} success
+                        {%- elif reusage_rate < 40 %} warning{% endif %}">
                         <div class="label">Keyword Reusage Rate</div>
                         <div class="value">{{ reusage_rate|round(1) }}%</div>
                         <div class="progress">
                             <div class="progress-fill" style="width: {{ reusage_rate }}%"></div>
                         </div>
                     </div>
-                    <div class="kpi-card {% if documentation_coverage >= 80 %}success{% elif documentation_coverage < 50 %}warning{% endif %}">
+                    <div class="kpi-card
+                        {%- if documentation_coverage >= 80 %} success
+                        {%- elif documentation_coverage < 50 %} warning{% endif %}">
                         <div class="label">Documentation Coverage</div>
                         <div class="value">{{ documentation_coverage|round(1) }}%</div>
                         <div class="progress">
                             <div class="progress-fill" style="width: {{ documentation_coverage }}%"></div>
                         </div>
                     </div>
-                    <div class="kpi-card {% if robocop_issues == 0 %}success{% elif robocop_issues > 20 %}danger{% elif robocop_issues > 5 %}warning{% endif %}">
+                    <div class="kpi-card
+                        {%- if robocop_issues == 0 %} success
+                        {%- elif robocop_issues > 20 %} danger
+                        {%- elif robocop_issues > 5 %} warning{% endif %}">
                         <div class="label">Code Quality Issues</div>
                         <div class="value">{{ robocop_issues }}</div>
                     </div>
@@ -609,8 +633,16 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                         <tr>
                             <td><strong>{{ kw.keyword_name }}</strong></td>
                             <td>{{ kw.file_name }}</td>
-                            <td style="text-align: center;"><span class="badge-count">{{ kw.usage_count }}</span></td>
-                            <td>{{ kw.documentation[:80] ~ '...' if kw.documentation and kw.documentation|length > 80 else (kw.documentation or '—') }}</td>
+                            <td style="text-align: center;">
+                                <span class="badge-count">{{ kw.usage_count }}</span>
+                            </td>
+                            <td>
+                                {%- if kw.documentation and kw.documentation|length > 80 -%}
+                                    {{ kw.documentation[:80] }}...
+                                {%- else -%}
+                                    {{ kw.documentation or '—' }}
+                                {%- endif -%}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -699,9 +731,17 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     <tbody>
                         {% for dup in duplicate_keywords %}
                         <tr>
-                            <td><strong>{{ dup.keyword1_name }}</strong><br><small style="color: #64748b;">{{ dup.keyword1_file }}</small></td>
-                            <td><strong>{{ dup.keyword2_name }}</strong><br><small style="color: #64748b;">{{ dup.keyword2_file }}</small></td>
-                            <td style="text-align: center;"><span class="badge-count">{{ dup.similarity_score|round(0)|int }}%</span></td>
+                            <td>
+                                <strong>{{ dup.keyword1_name }}</strong><br>
+                                <small style="color: #64748b;">{{ dup.keyword1_file }}</small>
+                            </td>
+                            <td>
+                                <strong>{{ dup.keyword2_name }}</strong><br>
+                                <small style="color: #64748b;">{{ dup.keyword2_file }}</small>
+                            </td>
+                            <td style="text-align: center;">
+                                <span class="badge-count">{{ dup.similarity_score|round(0)|int }}%</span>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -730,7 +770,8 @@ HTML_TEMPLATE = """<!DOCTYPE html>
                     {% if robocop_issues_by_category %}
                     <div class="issue-card">
                         <h4>Issues by Category</h4>
-                        {% set max_count = robocop_issues_by_category.values()|max if robocop_issues_by_category else 1 %}
+                        {% set max_cat = robocop_issues_by_category.values()|max %}
+                        {% set max_count = max_cat if robocop_issues_by_category else 1 %}
                         {% for category, count in robocop_issues_by_category|dictsort %}
                         <div class="issue-bar">
                             <span class="name">{{ category }}</span>
@@ -838,27 +879,25 @@ class HTMLExporter:
             html_content = template.render(**context)
 
             # Write to HTML file
-            with open(output_path, "w", encoding="utf-8") as f:
+            with output_path.open("w", encoding="utf-8") as f:
                 f.write(html_content)
 
             logger.info("Report exported to HTML: %s", output_path)
 
-        except Exception as e:
-            logger.exception("Error exporting report to HTML: %s", e)
+        except Exception:
+            logger.exception("Error exporting report to HTML")
             raise
 
     @staticmethod
     def _build_context(report: Report) -> dict:
         """Build template context from report."""
-        from datetime import datetime
-
         context = {
             "title": report.title,
             "project_name": report.metadata.project_name,
             "analysis_date": report.metadata.analysis_date.strftime("%B %d, %Y at %H:%M"),
             "author": report.metadata.author,
             "roboview_version": report.metadata.roboview_version,
-            "current_date": datetime.utcnow().strftime("%B %d, %Y at %H:%M:%S UTC"),
+            "current_date": datetime.now(UTC).strftime("%B %d, %Y at %H:%M:%S UTC"),
             # KPI data
             "total_keywords": report.summary.total_keywords,
             "unused_keywords": report.summary.unused_keywords,

@@ -2,6 +2,7 @@
 
 import logging
 from pathlib import Path
+from typing import Annotated
 
 import typer
 from roboview.services.file_register_service import FileRegistryService
@@ -17,32 +18,28 @@ logger = logging.getLogger(__name__)
 
 app = typer.Typer(help="RoboView reporting commands")
 
+# Constants
+_KB = 1024
+
 
 @app.command()
 def generate(
-    output: Path = typer.Option(
-        "roboview-report.html",
-        "--output",
-        "-o",
-        help="Output file path (HTML format)",
-    ),
-    project_root: Path = typer.Option(
-        ".",
-        "--project",
-        "-p",
-        help="Project root directory",
-    ),
-    author: str | None = typer.Option(
-        None,
-        "--author",
-        "-a",
-        help="Author of the report",
-    ),
-    robocop_config: Path | None = typer.Option(
-        None,
-        "--robocop-config",
-        help="Path to robocop configuration file",
-    ),
+    output: Annotated[
+        Path,
+        typer.Option("--output", "-o", help="Output file path (HTML format)"),
+    ] = Path("roboview-report.html"),
+    project_root: Annotated[
+        Path,
+        typer.Option("--project", "-p", help="Project root directory"),
+    ] = Path(),
+    author: Annotated[
+        str | None,
+        typer.Option("--author", "-a", help="Author of the report"),
+    ] = None,
+    robocop_config: Annotated[
+        Path | None,
+        typer.Option("--robocop-config", help="Path to robocop configuration file"),
+    ] = None,
 ) -> None:
     """Generate a comprehensive HTML summary report for a Robot Framework project.
 
@@ -63,6 +60,7 @@ def generate(
 
         # With author
         roboview report generate --author "QA Team" --output report.html
+
     """
     try:
         typer.echo("🚀 Generating summary report...")
@@ -119,7 +117,7 @@ def generate(
         HTMLExporter.export(report, output_path)
 
         file_size = output_path.stat().st_size
-        size_str = f"{file_size / 1024:.1f} KB" if file_size > 1024 else f"{file_size} bytes"
+        size_str = f"{file_size / _KB:.1f} KB" if file_size > _KB else f"{file_size} bytes"
 
         typer.echo("")
         typer.echo("✅ Report generated successfully!")
@@ -129,10 +127,10 @@ def generate(
         typer.echo(f"⚡ Risk Level: {report.risk_level}")
         typer.echo(f"📊 Best Practices Score: {report.best_practices_score:.1f}/100")
 
-    except Exception as e:
-        logger.exception("Error generating report: %s", e)
-        typer.echo(f"❌ Error: {e}", err=True)
-        raise typer.Exit(code=1)
+    except Exception:
+        logger.exception("Error generating report")
+        typer.echo("❌ Error generating report", err=True)
+        raise typer.Exit(code=1) from None
 
 
 @app.command()

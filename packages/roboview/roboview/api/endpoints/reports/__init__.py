@@ -2,10 +2,11 @@
 
 import logging
 import tempfile
-from datetime import datetime
+from datetime import UTC, datetime
 from pathlib import Path
 from uuid import uuid4
 
+import anyio
 from fastapi import APIRouter, HTTPException
 from roboview.schemas.dtos.reports import GenerateReportRequest, ReportStatusResponse
 from roboview.utils.exporters.html_exporter import HTMLExporter
@@ -17,6 +18,13 @@ router = APIRouter()
 
 # In-memory store for report status (in production, would use database)
 _REPORT_STATUS_STORE: dict[str, dict] = {}
+
+
+def _get_report_or_raise(report_id: str) -> dict:
+    """Get report from store or raise HTTPException."""
+    if report_id not in _REPORT_STATUS_STORE:
+        raise HTTPException(status_code=404, detail="Report not found")
+    return _REPORT_STATUS_STORE[report_id]
 
 
 @router.post(
@@ -42,7 +50,7 @@ async def generate_report(request: Request, report_request: GenerateReportReques
     """
     try:
         report_id = str(uuid4())
-        created_at = datetime.utcnow().isoformat()
+        created_at = datetime.now(UTC).isoformat()
 
         # Store report status
         _REPORT_STATUS_STORE[report_id] = {
@@ -84,14 +92,14 @@ async def generate_report(request: Request, report_request: GenerateReportReques
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.exception("Error generating report: %s", e)
+    except Exception:
+        logger.exception("Error generating report")
         report_id_local = str(uuid4())
         _REPORT_STATUS_STORE[report_id_local] = {
             "status": "failed",
-            "error": str(e),
+            "error": "Internal error",
         }
-        raise HTTPException(status_code=500, detail="Internal Server Error") from e
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
 
 
 @router.get(
@@ -115,10 +123,7 @@ async def get_report_status(report_id: str):  # noqa: ANN201
 
     """
     try:
-        if report_id not in _REPORT_STATUS_STORE:
-            raise HTTPException(status_code=404, detail="Report not found")
-
-        status_data = _REPORT_STATUS_STORE[report_id]
+        status_data = _get_report_or_raise(report_id)
         return ReportStatusResponse(
             report_id=report_id,
             status=status_data["status"],
@@ -130,9 +135,9 @@ async def get_report_status(report_id: str):  # noqa: ANN201
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.exception("Error retrieving report status: %s", e)
-        raise HTTPException(status_code=500, detail="Internal Server Error") from e
+    except Exception:
+        logger.exception("Error retrieving report status")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
 
 
 @router.get(
@@ -154,33 +159,28 @@ async def download_report(report_id: str):  # noqa: ANN201
         FileResponse: Report file
 
     """
+    status_data = _get_report_or_raise(report_id)
+
+    if status_data["status"] != "completed":
+        raise HTTPException(status_code=400, detail="Report generation not completed")
+
+    file_path = anyio.Path(status_data["file_path"])
+
     try:
-        if report_id not in _REPORT_STATUS_STORE:
-            raise HTTPException(status_code=404, detail="Report not found")
-
-        status_data = _REPORT_STATUS_STORE[report_id]
-        if status_data["status"] != "completed":
-            raise HTTPException(status_code=400, detail="Report generation not completed")
-
-        file_path = Path(status_data["file_path"])
-        if not file_path.exists():
-            raise HTTPException(status_code=404, detail="Report file not found")
-
-        # Determine media type based on format
-        export_format = status_data["export_format"]
-        media_type = "text/html"
+        if not await file_path.exists():
+            raise HTTPException(status_code=404, detail="Report file not found")  # noqa: TRY301
 
         return FileResponse(
-            file_path,
-            media_type=media_type,
+            Path(status_data["file_path"]),
+            media_type="text/html",
             filename=f"report_{report_id[:8]}.html",
         )
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.exception("Error downloading report: %s", e)
-        raise HTTPException(status_code=500, detail="Internal Server Error") from e
+    except Exception:
+        logger.exception("Error downloading report")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
 
 
 @router.get(
@@ -199,25 +199,23 @@ async def get_available_reports():  # noqa: ANN201
 
     """
     try:
-        reports = []
-        for report_id, status_data in _REPORT_STATUS_STORE.items():
-            if status_data["status"] == "completed":
-                reports.append(
-                    {
-                        "report_id": report_id,
-                        "report_type": status_data["report_type"],
-                        "export_format": status_data["export_format"],
-                        "created_at": status_data["created_at"],
-                        "file_size": status_data.get("file_size"),
-                        "status": status_data["status"],
-                    }
-                )
-
+        reports = [
+            {
+                "report_id": report_id,
+                "report_type": status_data["report_type"],
+                "export_format": status_data["export_format"],
+                "created_at": status_data["created_at"],
+                "file_size": status_data.get("file_size"),
+                "status": status_data["status"],
+            }
+            for report_id, status_data in _REPORT_STATUS_STORE.items()
+            if status_data["status"] == "completed"
+        ]
+    except Exception:
+        logger.exception("Error retrieving available reports")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
+    else:
         return reports
-
-    except Exception as e:
-        logger.exception("Error retrieving available reports: %s", e)
-        raise HTTPException(status_code=500, detail="Internal Server Error") from e
 
 
 @router.delete(
@@ -239,24 +237,20 @@ async def delete_report(report_id: str):  # noqa: ANN201
         Success message
 
     """
+    status_data = _get_report_or_raise(report_id)
+    file_path = anyio.Path(status_data.get("file_path", ""))
+
     try:
-        if report_id not in _REPORT_STATUS_STORE:
-            raise HTTPException(status_code=404, detail="Report not found")
-
-        status_data = _REPORT_STATUS_STORE[report_id]
-        file_path = Path(status_data.get("file_path", ""))
-
         # Delete file if exists
-        if file_path.exists():
-            file_path.unlink()
+        if await file_path.exists():
+            await file_path.unlink()
 
         # Remove from store
         del _REPORT_STATUS_STORE[report_id]
-
-        return {"status": "success", "message": "Report deleted"}
-
     except HTTPException:
         raise
-    except Exception as e:
-        logger.exception("Error deleting report: %s", e)
-        raise HTTPException(status_code=500, detail="Internal Server Error") from e
+    except Exception:
+        logger.exception("Error deleting report")
+        raise HTTPException(status_code=500, detail="Internal Server Error") from None
+    else:
+        return {"status": "success", "message": "Report deleted"}
