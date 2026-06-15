@@ -127,7 +127,7 @@ def generate(
         typer.echo(f"🏢 Project: {report.metadata.project_name}")
         typer.echo(f"📏 File Size: {size_str}")
         typer.echo(f"⚡ Risk Level: {report.risk_level}")
-        typer.echo(f"📊 Quality Score: {report.quality_scores.overall_score:.1f}/100")
+        typer.echo(f"📊 Best Practices Score: {report.best_practices_score:.1f}/100")
 
     except Exception as e:
         logger.exception("Error generating report: %s", e)
